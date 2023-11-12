@@ -1,0 +1,12 @@
+@using tl2_tp09_2023_lucianobonilla27.Models;
+@model Usuario
+
+<form asp-controller="Usuario" asp-action="CrearUsuario" method="post">
+  <div class="mb-3">
+    <label for="lbl.nombre" class="form-label" asp-for="NombreDeUsuario">Nombre de Usuario: </label>
+    <input type="text" class="form-control" id="lbl.nombre" asp-for="NombreDeUsuario">
+
+  </div>
+ 
+  <button type="submit" class="btn btn-primary">Crear</button>
+</form>

@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@using tl2_tp09_2023_lucianobonilla27.Models;
+@model List<Usuario>
+<h2>Usuarios List</h2>
+<a asp-controller="Usuario" asp-action="CrearUsuario" class="btn btn-primary">Crear Nuevo Usuario</a>
+
+<table class="table table-light">
+    <thead>
+        <tr>
+            <th hidden>ID</th>
+            <th>Nombre</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var usuario in Model)
+        {
+            <tr>    
+                <td hidden>@usuario.Id</td>
+                <td>@usuario.NombreDeUsuario</td>
+                <td>
+                    <a asp-controller="Usuario" asp-action="EditarUsuario" asp-route-id="@usuario.Id" class="btn btn-primary">Editar</a>
+                    <form asp-controller="Usuario" asp-action="EliminarUsuario" method="post" onsubmit="return confirm('¿Estás seguro que quieres eliminar el usuario?')">
+                        <input type="hidden" name="id" value="@usuario.Id" />
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
