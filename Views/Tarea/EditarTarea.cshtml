@@ -1,0 +1,44 @@
+@using tl2_tp09_2023_lucianobonilla27.Models;
+@model Tarea;
+
+<form asp-controller="Tarea" asp-action="EditarTarea" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="IdTablero">ID Tablero: </label>
+        <input asp-for="IdTablero" class="form-control"/>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="Nombre">Nombre: </label>
+        <input asp-for="Nombre" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="EstadoT">Estado: </label>
+        <select asp-for="EstadoT" class="form-control">
+            <option value="">Seleccione un estado</option>
+            @foreach (var estado in Enum.GetValues(typeof(Tarea.Estado)))
+            {
+                <option value="@estado">@estado</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="Descripcion">Descripción: </label>
+        <input asp-for="Descripcion" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="Color">Color: </label>
+        <input asp-for="Color" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="IdUsuarioAsignado">Usuario Asignado: </label>
+        <input asp-for="IdUsuarioAsignado" class="form-control" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Guardar Cambios</button>
+</form>
