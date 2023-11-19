@@ -31,7 +31,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         }
         public void ModificarTablero(int id, Tablero tableroModificado)
         {
-            var query = @"UPDATE Tablero SET nombre = @nombre, descripcion = @descripcion WHERE id = @id";
+            var query = @"UPDATE Tablero SET nombre = @nombre, descripcion = @descripcion WHERE id = @id;";
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
                 connection.Open();
@@ -81,26 +81,23 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
                 connection.Open();
+                var tablero = new Tablero();
                 var command = new SQLiteCommand(query, connection);
                 command.Parameters.Add(new SQLiteParameter("@id", id));
                 var reader = command.ExecuteReader();
 
-                if (reader.Read())
+                while (reader.Read())
                 {
-                    var tablero = new Tablero
-                    {
-                        Id = Convert.ToInt32(reader["id"]),
-                        IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]),
-                        Nombre = reader["nombre"].ToString(),
-                        Descripcion = reader["descripcion"].ToString()
-                    };
-
+                    tablero.Id = Convert.ToInt32(reader["id"]);
+                    tablero.IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]);
+                    tablero.Nombre = reader["nombre"].ToString();
+                    tablero.Descripcion = reader["descripcion"].ToString();
+                }
                     connection.Close();
                     return tablero;
-                }
             }
 
-            return null;
+        
         }
 
         public void EliminarTablero(int id)
