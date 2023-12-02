@@ -1,55 +1,44 @@
 @{
-    ViewData["Title"] = "Lista de Tareas";
+    ViewData["Title"] = "Home Page";
 }
-@using tl2_tp09_2023_lucianobonilla27.Models;
-@model List<Tarea>
-<h2>Tarea List usuario 5</h2>
+@using tl2_tp10_2023_lucianobonilla27.ViewModels;
+@model List<IndexTareaViewModel>
 
+<h2>Tareas List</h2>
+<a asp-controller="Tarea" asp-action="CrearTarea" class="btn btn-primary">Crear Nueva Tarea</a>
 
-    <a asp-controller="Tarea" asp-action="CrearTarea" class="btn btn-primary">Crear Nueva Tarea</a>
-
-    <table class="table table-light">
-        <thead>
+<table class="table table-light">
+    <thead>
+        <tr>
+            <th hidden>ID</th>
+            <th>Tablero</th>
+            <th>Nombre</th>
+            <th>Estado</th>
+            <th>Descripción</th>
+            <th>Color</th>
+            <th>Usuario Asignado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tarea in Model)
+        {
             <tr>
-                <th hidden>ID</th>
-                <th>ID Tablero</th>
-                <th>Nombre</th>
-                <th>Estado</th>
-                <th>Descripción</th>
-                <th>Color</th>
-                <th>ID Usuario Asignado</th>
-                <th>Acciones</th>
+                <td hidden>@tarea.Id</td>
+                <td>@tarea.NombreTablero</td>
+                <td>@tarea.Nombre</td>
+                <td>@tarea.EstadoT</td>
+                <td>@tarea.Descripcion</td>
+                <td>@tarea.Color</td>
+                <td>@tarea.NombreUsuarioAsignado</td>
+                <td>
+                    <a asp-controller="Tarea" asp-action="EditarTarea" asp-route-id="@tarea.Id" class="btn btn-primary">Editar</a>
+                    <form asp-controller="Tarea" asp-action="EliminarTarea" method="post" onsubmit="return confirm('¿Estás seguro que quieres eliminar la tarea?')">
+                        <input type="hidden" name="id" value="@tarea.Id" />
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var tarea in Model)
-            {
-                <tr>
-                    @if (tarea != null)
-                    {
-                        <td hidden>@tarea.Id</td>
-                        <td>@tarea.IdTablero</td>
-                        <td>@tarea.Nombre</td>
-                        <td>@tarea.EstadoT</td>
-                        <td>@tarea.Descripcion</td>
-                        <td>@tarea.Color</td>
-                        <td>@tarea.IdUsuarioAsignado</td>
-                        <td>
-                            <a asp-controller="Tarea" asp-action="EditarTarea" asp-route-id="@tarea.Id"
-                                class="btn btn-primary">Editar</a>
-                            <form asp-controller="Tarea" asp-action="EliminarTarea" method="post"
-                                onsubmit="return confirm('¿Estás seguro que quieres eliminar la tarea?')">
-                                <input type="hidden" name="id" value="@tarea.Id" />
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
-                        </td>
-                    }
-                    else
-                    {
-                        <td colspan="8">Tarea es null</td>
-                    }
-                </tr>
-            }
-
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>

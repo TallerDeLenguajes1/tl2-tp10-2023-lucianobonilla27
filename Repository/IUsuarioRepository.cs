@@ -11,6 +11,8 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         void ModificarUsuario(int id, Usuario usuarioModificado);
         List<Usuario> ListarUsuarios();
         Usuario ObtenerUsuarioPorId(int id);
+       Usuario ObtenerUsuarioPorNombre(string nombre);
+
         void EliminarUsuario(int id);
     }
 }

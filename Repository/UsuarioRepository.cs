@@ -8,13 +8,13 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 {
     public class UsuarioRepository : IUsuarioRepository
     {
-        private string cadenaConexion = "Data Source=DB/kanban.bd;Cache=Shared";
+        private string cadenaConexion = "Data Source=DB/kanbanV2.bd;Cache=Shared";
 
 
 
     public void CrearUsuario(Usuario usuario)
     {
-         var query = @"INSERT INTO usuario (nombre_de_usuario) VALUES (@nombre_de_usuario)";
+         var query = @"INSERT INTO usuario (nombre_de_usuario,rol,contrasenia) VALUES (@nombre_de_usuario,@rol,@contrasenia)";
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
 
@@ -22,6 +22,9 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 var command = new SQLiteCommand(query, connection);
 
                 command.Parameters.Add(new SQLiteParameter("@nombre_de_usuario", usuario.NombreDeUsuario));
+                command.Parameters.Add(new SQLiteParameter("@rol", usuario.RolUsuario));
+                command.Parameters.Add(new SQLiteParameter("@contrasenia", usuario.Contrasenia));
+
                 command.ExecuteNonQuery();
 
                 connection.Close();   
@@ -30,7 +33,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 
     public void ModificarUsuario(int id, Usuario usuarioModificado)
     {
-       var query = $"UPDATE Usuario SET nombre_de_usuario = (@nombre_de_usuario) WHERE id=@idUsuario";
+       var query = $"UPDATE Usuario SET nombre_de_usuario = @nombre_de_usuario,rol = @rol,contrasenia = @contrasenia  WHERE id=@idUsuario";
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
 
@@ -38,6 +41,9 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 var command = new SQLiteCommand(query, connection);
 
                 command.Parameters.Add(new SQLiteParameter("@nombre_de_usuario", usuarioModificado.NombreDeUsuario));
+                command.Parameters.Add(new SQLiteParameter("@rol", (int)usuarioModificado.RolUsuario));
+                command.Parameters.Add(new SQLiteParameter("@nombre_de_usuario", usuarioModificado.NombreDeUsuario));
+                command.Parameters.Add(new SQLiteParameter("@contrasenia", usuarioModificado.Contrasenia));
                 command.Parameters.Add(new SQLiteParameter("@idUsuario", id));
 
                 command.ExecuteNonQuery();
@@ -63,6 +69,8 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                         var usuario = new Usuario();
                         usuario.Id = Convert.ToInt32(reader["id"]);
                         usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                        usuario.RolUsuario = Enum.Parse<Usuario.Rol>(reader["rol"].ToString());
+
                         usuarios.Add(usuario);
                     }
                 }
@@ -85,6 +93,31 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 {
                     usuario.Id = Convert.ToInt32(reader["id"]);
                     usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                    usuario.Contrasenia = reader["contrasenia"].ToString();
+                    usuario.RolUsuario = Enum.Parse<Usuario.Rol>(reader["rol"].ToString());
+                }
+            }
+            connection.Close();
+
+            return (usuario);
+    }
+
+    public Usuario ObtenerUsuarioPorNombre(string nombre)
+    {
+        SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
+            var usuario = new Usuario();
+            SQLiteCommand command = connection.CreateCommand();
+            command.CommandText = "SELECT * FROM usuario WHERE nombre_de_usuario = @nombre";
+            command.Parameters.Add(new SQLiteParameter("@nombre", nombre));
+            connection.Open();
+            using(SQLiteDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    usuario.Id = Convert.ToInt32(reader["id"]);
+                    usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                    usuario.Contrasenia = reader["contrasenia"].ToString();
+                    usuario.RolUsuario = Enum.Parse<Usuario.Rol>(reader["rol"].ToString());
                 }
             }
             connection.Close();

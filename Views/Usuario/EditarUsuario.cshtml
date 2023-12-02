@@ -1,5 +1,7 @@
 @using tl2_tp09_2023_lucianobonilla27.Models;
-@model Usuario
+@using tl2_tp10_2023_lucianobonilla27.ViewModels;
+@section Scripts{<partial name="_ValidationScriptsPartial"/>}
+@model EditarUsuarioViewModel;
 
 <form asp-controller="Usuario" asp-action="EditarUsuario" method="post">
     <input type="hidden" asp-for="Id" />
@@ -9,7 +11,22 @@
         <input asp-for="NombreDeUsuario" class="form-control" />
     </div>
 
-   
+    <div class="mb-3">
+        <label class="form-label" asp-for="RolUsuario">Rol: </label>
+        <select asp-for="RolUsuario" class="form-control">
+            @foreach (var rol in Enum.GetValues(typeof(Usuario.Rol)))
+            {
+                <option value="@rol">@rol</option>
+            }
+        </select>
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="Contrasenia">Contraseña: </label>
+        <input asp-for="Contrasenia" class="form-control" />
+        <p>Si este campo queda en blanco se sigue usando la Contraseña anterior</p>
+    </div>
 
     <button class="btn btn-primary" type="submit">Guardar Cambios</button>
 </form>

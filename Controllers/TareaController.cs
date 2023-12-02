@@ -1,79 +1,179 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using tl2_tp09_2023_lucianobonilla27.Models;
+using tl2_tp09_2023_lucianobonilla27.Repository;
+using tl2_tp10_2023_lucianobonilla27.ViewModels;
 
 namespace tl2_tp10_2023_lucianobonilla27.Controllers
 {
     [Route("[controller]")]
     public class TareaController : Controller
     {
+        private readonly ITareaRepository _repositorioTarea;
+        private readonly ITableroRepository _repositorioTablero;
+        private IUsuarioRepository _repositorioUsuario;
         private readonly ILogger<TareaController> _logger;
-        private TareaRepository manejo;
 
-        public TareaController(ILogger<TareaController> logger)
+        public TareaController(ILogger<TareaController> logger, ITareaRepository repositorioTarea, ITableroRepository repositorioTablero, IUsuarioRepository repositorioUsuario)
         {
+            _repositorioTarea = repositorioTarea;
+            _repositorioTablero = repositorioTablero;
+            _repositorioUsuario = repositorioUsuario;
             _logger = logger;
-            manejo = new TareaRepository();
         }
 
         [Route("Index")]
         public IActionResult Index()
         {
-            var tareas = manejo.ListarPorUsuario(5);
-            return View(tareas);
+            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
+                    return View(ListarTareasIndex());
+            }
+             return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View("Error!");
-        }
+            [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+            public IActionResult Error()
+            {
+                return View("Error!");
+            }
 
 
-        [HttpGet]
-        [Route("EditarTarea")]
-        public IActionResult EditarTarea(int id)
-        {
-            var tarea = manejo.ObtenerTareaPorId(id);
-            return View(tarea);
-        }
+            [HttpGet]
+            [Route("EditarTarea")]
+            public IActionResult EditarTarea(int id)
+            {
+                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
 
-        [HttpPost]
-        [Route("EditarTarea")]
-        public IActionResult EditarTarea(int id,Tarea modificada)
-        {
-            manejo.ModificarTarea(id,modificada);
-             return RedirectToAction("Index");
+                    var tarea = _repositorioTarea.ObtenerTareaPorId(id);
+                    var tareaVm = new EditarTareaViewModel();
+                    tareaVm.Id = tarea.Id;
+                    tareaVm.Descripcion = tarea.Descripcion;
+                    tareaVm.Color = tarea.Color;
+                    tareaVm.EstadoT = tarea.EstadoT;
+                    tareaVm.IdTablero = tarea.IdTablero;
+                    tareaVm.IdUsuarioAsignado = tarea.IdUsuarioAsignado;
+                    tareaVm.Nombre = tarea.Nombre;
+                    var usu = _repositorioUsuario.ObtenerUsuarioPorId(tarea.IdUsuarioAsignado);
+                    tareaVm.NombreUsuarioAsignado = usu.NombreDeUsuario;
+                    var tab = _repositorioTablero.ObtenerTableroPorId(tarea.IdTablero);
+                    tareaVm.NombreTablero = tab.Nombre;
+                    return View(tareaVm);
+                }
+                return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
 
-        }
+            }
 
-        [HttpGet]
-        [Route("CrearTarea")]
-        public IActionResult CrearTarea()
-        {
-            return View(new Tarea());
-        }
+            [HttpPost]
+            [Route("EditarTarea")]
+            public IActionResult EditarTarea(int id, Tarea modificada)
+            {
+                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
 
-        [HttpPost]
-        [Route("CrearTarea")]
-        public IActionResult CrearTarea(Tarea nueva)
-        {
-            manejo.CrearTareaEnTablero(2,nueva);
-            return RedirectToAction("Index");
-        }
+                    _repositorioTarea.ModificarTarea(id, modificada);
+                    return RedirectToAction("Index");
+                }
+                return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
 
-        [HttpPost]
-        [Route("EliminarTarea")]
-        public IActionResult EliminarTarea(int id)
-        {
-            manejo.EliminarTarea(id);
-            return RedirectToAction("Index");
+            }
+
+            [HttpGet]
+            [Route("CrearTarea")]
+            public IActionResult CrearTarea()
+            {
+                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
+                     return View(new CrearTareaViewModel());
+                }
+                return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
+
+            }
+
+            [HttpPost]
+            [Route("CrearTarea")]
+            public IActionResult CrearTarea(CrearTareaViewModel nueva)
+            {
+                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
+                
+                    if (HttpContext.Session.TryGetValue("Id", out var idUsuario))
+                    {
+                        var tarea = new Tarea();
+                        tarea.Id = nueva.Id;
+                        tarea.Color = nueva.Color;
+                        tarea.Descripcion = nueva.Descripcion;
+                        tarea.Nombre = nueva.Nombre;
+                        tarea.EstadoT = nueva.EstadoT;
+                        var usu = _repositorioUsuario.ObtenerUsuarioPorNombre(nueva.NombreUsuarioAsignado);
+                        tarea.IdUsuarioAsignado = usu.Id;
+                        var tab = _repositorioTablero.ObtenerTableroPorNombre(nueva.NombreTablero);
+                        _repositorioTarea.CrearTareaEnTablero(tab.Id,tarea);
+
+                        // var idUsuarioComoEntero = BitConverter.ToInt32(idUsuario);
+                        // var idTablero = _repositorioTablero.ObtenerIdTableroPorUsuario(idUsuarioComoEntero);
+                        // _repositorioTarea.CrearTareaEnTablero(idTablero, nueva);
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        // Manejar el caso en el que "Id" no está en la sesión.
+                        return RedirectToAction("Index");
+                    }
+                }
+                return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
+
+            }
+
+            [HttpPost]
+            [Route("EliminarTarea")]
+            public IActionResult EliminarTarea(int id)
+            {
+                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
+
+                    _repositorioTarea.EliminarTarea(id);
+                    return RedirectToAction("Index");
+                }
+                return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
+
+
+            }
+
+           
+
+            private List<IndexTareaViewModel> ListarTareasIndex(){
+                var listaTareasIndex = new List<IndexTareaViewModel>();
+                var listaTareas = _repositorioTarea.ListarTareas();
+                foreach (var item in listaTareas)
+                {
+                    Tablero? tab = _repositorioTablero.ObtenerTableroPorId(item.IdTablero);
+                    Usuario? usu = _repositorioUsuario.ObtenerUsuarioPorId(item.IdUsuarioAsignado);
+                    string? nombreUsuario;
+                    string? nombreTablero;
+                    if (usu != null)
+                    {
+                        nombreUsuario = usu.NombreDeUsuario;
+                    }
+                    else
+                    {
+                        nombreUsuario = null;
+                    }
+                    if (tab != null)
+                    {
+                        nombreTablero = tab.Nombre;
+                    }
+                    else
+                    {
+                        nombreTablero = null;
+                    }
+                    var tarvm = new IndexTareaViewModel(item, nombreUsuario, nombreTablero);
+                    listaTareasIndex.Add(tarvm);
+                }
+                return listaTareasIndex;
+            }
 
         }
     }
-}

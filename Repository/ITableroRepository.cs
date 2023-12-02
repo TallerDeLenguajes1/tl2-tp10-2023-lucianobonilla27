@@ -13,6 +13,8 @@ namespace tl2_tp09_2023_lucianobonilla27.Repository
         List<Tablero> ListarTableros();
         Tablero ObtenerTableroPorId(int id);
         void EliminarTablero(int id);
+        int ObtenerIdTableroPorUsuario(int idUsuarioPropietario);
+        Tablero ObtenerTableroPorNombre(string nombre);
         List<Tablero> ListarTableroPorUsuario(int id);
     }
 }

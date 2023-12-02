@@ -7,19 +7,21 @@
 <a asp-controller="Usuario" asp-action="CrearUsuario" class="btn btn-primary">Crear Nuevo Usuario</a>
 
 <table class="table table-light">
-     <thead>
+    <thead>
         <tr>
             <th hidden>Id</th>
             <th>Nombre</th>
+            <th>Rol</th>
             <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var usuario in Model)
         {
-            <tr>    
+            <tr>
                 <td hidden>@usuario.Id</td>
                 <td>@usuario.NombreDeUsuario</td>
+                <td>@usuario.RolUsuario</td>
                 <td>
                     <a asp-controller="Usuario" asp-action="EditarUsuario" asp-route-id="@usuario.Id" class="btn btn-primary">Editar</a>
                     <form asp-controller="Usuario" asp-action="EliminarUsuario" method="post" onsubmit="return confirm('¿Estás seguro que quieres eliminar el usuario?')">

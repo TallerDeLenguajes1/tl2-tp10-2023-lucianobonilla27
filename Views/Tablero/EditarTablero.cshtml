@@ -1,7 +1,9 @@
-@using tl2_tp09_2023_lucianobonilla27.Models;
-@model Tablero;
+@using tl2_tp10_2023_lucianobonilla27.ViewModels;
+@section Scripts{<partial name="_ValidationScriptsPartial"/>}
+@model EditarTableroViewModel;
 <form asp-controller="Tablero" asp-action="EditarTablero" method="post">
     <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Id_Usuario_Propietario">
 
     <div class="mb-3">
         <label class="form-label" asp-for="Nombre">Nombre: </label>
@@ -9,8 +11,8 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label" asp-for="IdUsuarioPropietario">ID Usuario Propietario: </label>
-        <input asp-for="IdUsuarioPropietario" class="form-control" />
+        <label class="form-label" asp-for="NombreUsuario">Nombre Usuario propiertario: </label>
+        <input asp-for="NombreUsuario" class="form-control" />
     </div>
 
     <div class="mb-3">

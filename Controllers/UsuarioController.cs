@@ -6,27 +6,27 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using tl2_tp09_2023_lucianobonilla27.Models;
+using tl2_tp10_2023_lucianobonilla27.ViewModels;
 
 namespace tl2_tp10_2023_lucianobonilla27.Controllers
 {
     [Route("[controller]")]
     public class UsuarioController : Controller
     {
+        private readonly IUsuarioRepository _repositorioUsuario;
         private readonly ILogger<UsuarioController> _logger;
-        private UsuarioRepository manejo;
-
-        public UsuarioController(ILogger<UsuarioController> logger)
+        
+        public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepository repositorioUsuario)
         {
+            _repositorioUsuario=repositorioUsuario;
             _logger = logger;
-            manejo = new UsuarioRepository();
-
         }
 
         [Route("Index")]
 
         public IActionResult Index()
         {
-            var usuarios = manejo.ListarUsuarios();
+            var usuarios = _repositorioUsuario.ListarUsuarios();
             return View(usuarios);
         }
 
@@ -40,14 +40,15 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         [Route("CrearUsuario")]
         public IActionResult CrearUsuario() 
         {
-            return View(new Usuario());
+            return View(new CrearUsuarioViewModel());
         }
 
         [HttpPost]
         [Route("CrearUsuario")]
-        public IActionResult CrearUsuario(Usuario u)
+        public IActionResult CrearUsuario(CrearUsuarioViewModel u)
         {
-            manejo.CrearUsuario(u);
+            var usuario = new Usuario(u.NombreDeUsuario,u.Contrasenia,u.RolUsuario);
+            _repositorioUsuario.CrearUsuario(usuario);
             return RedirectToAction("Index");
         }
 
@@ -55,18 +56,24 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         [Route("EditarUsuario")]
         public IActionResult EditarUsuario(int id)
         {
-            var usuario = manejo.ObtenerUsuarioPorId(id);
-            return View(usuario);
+            var u = _repositorioUsuario.ObtenerUsuarioPorId(id);
+            var VmUsuario = new EditarUsuarioViewModel(u.Id,u.NombreDeUsuario,u.Contrasenia,u.RolUsuario);
+            return View(VmUsuario);
         }
 
         [HttpPost]
         [Route("EditarUsuario")]
-        public IActionResult EditarUsuario(Usuario usuario)
+        public IActionResult EditarUsuario(EditarUsuarioViewModel usuario)
         {   
-            var usuarioMod = manejo.ObtenerUsuarioPorId(usuario.Id);
+            var usuarioMod = _repositorioUsuario.ObtenerUsuarioPorId(usuario.Id);
             usuarioMod.NombreDeUsuario = usuario.NombreDeUsuario;
+            if (usuario.Contrasenia != null)
+            {
+                usuarioMod.Contrasenia = usuario.Contrasenia;
+            }
+            usuarioMod.RolUsuario = usuario.RolUsuario;
 
-            manejo.ModificarUsuario(usuario.Id,usuario);
+            _repositorioUsuario.ModificarUsuario(usuario.Id,usuarioMod);
 
             return RedirectToAction("Index");
         }
@@ -75,7 +82,7 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         [Route("EliminarUsuario")]
         public IActionResult EliminarUsuario(int id)
         {
-            manejo.EliminarUsuario(id);
+            _repositorioUsuario.EliminarUsuario(id);
             return RedirectToAction("Index");
 
         }

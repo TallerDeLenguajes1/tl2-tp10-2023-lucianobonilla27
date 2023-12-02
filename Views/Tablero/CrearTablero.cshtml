@@ -1,5 +1,6 @@
-@using tl2_tp09_2023_lucianobonilla27.Models;
-@model Tablero
+@using tl2_tp10_2023_lucianobonilla27.ViewModels
+@section Scripts{<partial name="_ValidationScriptsPartial"/>}
+@model CrearTableroViewModel;
 
 <form asp-controller="Tablero" asp-action="CrearTablero" method="post">
     <div class="mb-3">
@@ -13,10 +14,7 @@
     </div>
 
     
-    <div class="mb-3">
-        <label for="lbl.idUsuarioPropietario" class="form-label" asp-for="IdUsuarioPropietario">ID Usuario Propietario: </label>
-        <input type="number" class="form-control" id="lbl.idUsuarioPropietario" asp-for="IdUsuarioPropietario">
-    </div>
+    <p>El usuario Propiertario de este tablero sera el de la sesion iniciada</p>
 
     
 

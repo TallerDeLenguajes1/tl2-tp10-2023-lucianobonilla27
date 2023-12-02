@@ -11,7 +11,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 {
     public class TareaRepository : ITareaRepository
     {
-       private string cadenaConexion = "Data Source=DB/kanban.bd;Cache=Shared";
+       private string cadenaConexion = "Data Source=DB/kanbanV2.bd;Cache=Shared";
 
         public Tarea CrearTareaEnTablero(int idTablero,Tarea tarea)
         {

@@ -1,12 +1,28 @@
 @using tl2_tp09_2023_lucianobonilla27.Models;
-@model Usuario
+@using tl2_tp10_2023_lucianobonilla27.ViewModels;
+@section Scripts{<partial name="_ValidationScriptsPartial"/>}
+@model CrearUsuarioViewModel;
 
 <form asp-controller="Usuario" asp-action="CrearUsuario" method="post">
   <div class="mb-3">
     <label for="lbl.nombre" class="form-label" asp-for="NombreDeUsuario">Nombre de Usuario: </label>
     <input type="text" class="form-control" id="lbl.nombre" asp-for="NombreDeUsuario">
-
   </div>
- 
+
+  <div class="mb-3">
+    <label for="lbl.contrasenia" class="form-label" asp-for="Contrasenia">Contraseña: </label>
+    <input type="password" class="form-control" id="lbl.contrasenia" asp-for="Contrasenia">
+  </div>
+
+  <div class="mb-3">
+    <label for="lbl.rol" class="form-label" asp-for="RolUsuario">Rol: </label>
+    <select class="form-control" id="lbl.rol" asp-for="RolUsuario">
+      @foreach (var rol in Enum.GetValues(typeof(Usuario.Rol)))
+      {
+        <option value="@rol">@rol</option>
+      }
+    </select>
+  </div>
+
   <button type="submit" class="btn btn-primary">Crear</button>
 </form>

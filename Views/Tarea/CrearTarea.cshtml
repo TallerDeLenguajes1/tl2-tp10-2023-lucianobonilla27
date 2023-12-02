@@ -1,16 +1,19 @@
 @using tl2_tp09_2023_lucianobonilla27.Models;
-@model Tarea;
+@using tl2_tp10_2023_lucianobonilla27.ViewModels;
+@section Scripts{<partial name="_ValidationScriptsPartial"/>}
+@model CrearTareaViewModel;
 
 <form asp-controller="Tarea" asp-action="CrearTarea" method="post">
     <input type="hidden" asp-for="Id" />
 
     <div class="mb-3">
-        <label class="form-label" asp-for="IdTablero">ID Tablero: </label>
-        <input asp-for="IdTablero" class="form-control"/>
+        <input type="hidden" asp-for="IdTablero" class="form-control"/>
+        <label class="form-label" asp-for="NombreTablero">Nombre Tablero</label>
+        <input asp-for="NombreTablero" class="form-control"/>
     </div>
 
     <div class="mb-3">
-        <label class="form-label" asp-for="Nombre">Nombre: </label>
+        <label class="form-label" asp-for="Nombre">Nombre Tarea: </label>
         <input asp-for="Nombre" class="form-control" />
     </div>
 
@@ -36,8 +39,10 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label" asp-for="IdUsuarioAsignado">Usuario Asignado: </label>
-        <input asp-for="IdUsuarioAsignado" class="form-control" />
+        <input type="hidden" asp-for="IdUsuarioAsignado" class="form-control" />
+        <label class="form-label" asp-for="NombreUsuarioAsignado">Nombre Usuario Asignado: </label>
+        <input asp-for="NombreUsuarioAsignado" class="form-control"/>
+
     </div>
 
     <button class="btn btn-primary" type="submit">Crear Tarea</button>

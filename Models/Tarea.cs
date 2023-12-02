@@ -22,7 +22,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         public Estado EstadoT{get;set;}
         public string? Descripcion{get;set;}
         public string? Color{get;set;}
-        public int? IdUsuarioAsignado{get;set;}
+        public int IdUsuarioAsignado{get;set;}
 
     // public Tarea(int id, int idTablero, string nombre, Estado estado, string? descripcion, string? color, int idUsuarioAsignado)
     // {

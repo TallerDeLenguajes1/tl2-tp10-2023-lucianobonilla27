@@ -11,7 +11,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 {
     public class TableroRepository : ITableroRepository
     {
-        private string cadenaConexion = "Data Source=DB/kanban.bd;Cache=Shared";
+        private string cadenaConexion = "Data Source=DB/kanbanV2.bd;Cache=Shared";
         public void CrearTablero(Tablero t){
             var query = @"INSERT INTO Tablero (id_usuario_propietario, nombre, descripcion) VALUES (@id, @nombre, @descripcion)";
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
@@ -31,7 +31,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         }
         public void ModificarTablero(int id, Tablero tableroModificado)
         {
-            var query = @"UPDATE Tablero SET nombre = @nombre, descripcion = @descripcion WHERE id = @id;";
+            var query = @"UPDATE Tablero SET nombre = @nombre, descripcion = @descripcion, id_usuario_propietario = @idPropietario WHERE id = @id;";
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
                 connection.Open();
@@ -39,6 +39,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 
                 command.Parameters.Add(new SQLiteParameter("@nombre", tableroModificado.Nombre));
                 command.Parameters.Add(new SQLiteParameter("@descripcion", tableroModificado.Descripcion));
+                command.Parameters.Add(new SQLiteParameter("@idPropietario", tableroModificado.IdUsuarioPropietario));
                 command.Parameters.Add(new SQLiteParameter("@id", id));
 
                 command.ExecuteNonQuery();
@@ -99,6 +100,58 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 
         
         }
+        
+        public Tablero ObtenerTableroPorNombre(string nombre)
+        {
+            var query = "SELECT * FROM Tablero WHERE nombre = @nombre";
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                connection.Open();
+                var tablero = new Tablero();
+                var command = new SQLiteCommand(query, connection);
+                command.Parameters.Add(new SQLiteParameter("@nombre", nombre));
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    tablero.Id = Convert.ToInt32(reader["id"]);
+                    tablero.IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]);
+                    tablero.Nombre = reader["nombre"].ToString();
+                    tablero.Descripcion = reader["descripcion"].ToString();
+                }
+                    connection.Close();
+                    return tablero;
+            }
+
+        
+        }
+        public int ObtenerIdTableroPorUsuario(int idUsuarioPropietario)
+        {
+            var query = "SELECT id FROM Tablero WHERE id_usuario_propietario = @idUsuarioPropietario";
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                connection.Open();
+                var command = new SQLiteCommand(query, connection);
+                command.Parameters.Add(new SQLiteParameter("@idUsuarioPropietario", idUsuarioPropietario));
+
+                // Intentamos ejecutar el comando y obtener el resultado
+                var resultado = command.ExecuteScalar();
+
+                // Cerramos la conexión antes de retornar el resultado
+                connection.Close();
+
+                // Si el resultado no es nulo, convertimos a entero y lo retornamos
+                if (resultado != null)
+                {
+                    return Convert.ToInt32(resultado);
+                }
+
+                // Si no hay resultado, retornamos un valor predeterminado (por ejemplo, -1)
+                return -1;
+            }
+        }
+
+
 
         public void EliminarTablero(int id)
         {
