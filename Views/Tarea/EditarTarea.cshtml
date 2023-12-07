@@ -10,11 +10,15 @@
         <input type="hidden" asp-for="IdTablero" class="form-control"/>
         <label class="form-label" asp-for="NombreTablero">Nombre Tablero</label>
         <input asp-for="NombreTablero" class="form-control"/>
+        <span asp-validation-for="@Model.NombreTablero" class="text-danger"></span>
+
     </div>
 
     <div class="mb-3">
         <label class="form-label" asp-for="Nombre">Nombre Tarea: </label>
         <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="@Model.Nombre" class="text-danger"></span>
+
     </div>
 
     <div class="mb-3">

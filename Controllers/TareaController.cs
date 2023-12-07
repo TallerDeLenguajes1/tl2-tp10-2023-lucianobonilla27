@@ -72,11 +72,37 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
 
             [HttpPost]
             [Route("EditarTarea")]
-            public IActionResult EditarTarea(int id, Tarea modificada)
+            public IActionResult EditarTarea(int id, EditarTareaViewModel modificada)
             {
                 if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
-
-                    _repositorioTarea.ModificarTarea(id, modificada);
+                    try
+                    {
+                        var tarea = _repositorioTarea.ObtenerTareaPorId(id);
+                        var usuario = _repositorioUsuario.ObtenerUsuarioPorNombre(modificada.NombreUsuarioAsignado);
+                        var tablero = _repositorioTablero.ObtenerTableroPorNombre(modificada.NombreTablero);
+                        int usuarioAsignado; // creo esta variable ya que en el constructor de tarea no puedo manda modificada.IdUsuarioAsignado
+                        if (usuario != null)
+                        {
+                            usuarioAsignado = usuario.Id;
+                        }else
+                        {
+                            usuarioAsignado = tarea.IdUsuarioAsignado;
+                        }
+                         
+                        if (tablero != null)
+                        {
+                            modificada.IdTablero = tablero.Id;
+                        }else
+                        {
+                            modificada.IdTablero = tarea.IdTablero;
+                        }
+                        _repositorioTarea.ModificarTarea(id, new Tarea(modificada.Id,modificada.IdTablero,modificada.Nombre,modificada.EstadoT,modificada.Descripcion,modificada.Color,usuarioAsignado));
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogError(e.ToString());
+                    }
+                    
                     return RedirectToAction("Index");
                 }
                 return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
@@ -100,8 +126,8 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             {
                 if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
                 
-                    if (HttpContext.Session.TryGetValue("Id", out var idUsuario))
-                    {
+                   try
+                   {
                         var tarea = new Tarea();
                         tarea.Id = nueva.Id;
                         tarea.Color = nueva.Color;
@@ -112,17 +138,15 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
                         tarea.IdUsuarioAsignado = usu.Id;
                         var tab = _repositorioTablero.ObtenerTableroPorNombre(nueva.NombreTablero);
                         _repositorioTarea.CrearTareaEnTablero(tab.Id,tarea);
-
-                        // var idUsuarioComoEntero = BitConverter.ToInt32(idUsuario);
-                        // var idTablero = _repositorioTablero.ObtenerIdTableroPorUsuario(idUsuarioComoEntero);
-                        // _repositorioTarea.CrearTareaEnTablero(idTablero, nueva);
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        // Manejar el caso en el que "Id" no está en la sesión.
-                        return RedirectToAction("Index");
-                    }
+                   }
+                   catch (Exception e)
+                   {
+                        _logger.LogError(e.ToString());
+                   }
+                    
+                    return RedirectToAction("Index");
+                
+                   
                 }
                 return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
 
@@ -133,8 +157,15 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             public IActionResult EliminarTarea(int id)
             {
                 if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
-
-                    _repositorioTarea.EliminarTarea(id);
+                    try
+                    {
+                        _repositorioTarea.EliminarTarea(id);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogError(e.ToString());
+                    }
+                    
                     return RedirectToAction("Index");
                 }
                 return (RedirectToRoute(new { Controller = "Home", action = "Index" }));

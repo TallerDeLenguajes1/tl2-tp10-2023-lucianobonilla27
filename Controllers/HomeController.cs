@@ -9,12 +9,13 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    //private LoginRepository _repositorioLogin;
+    private readonly ILogger<LoginRepository> _logger;
+
     private readonly ILoginRepository _repositorioLogin;
-    public HomeController(ILoginRepository repositorioLogin)
+    public HomeController(ILogger<LoginRepository> logger,ILoginRepository repositorioLogin)
     {
        _repositorioLogin=repositorioLogin;
+        _logger = logger;
     }
 
     public IActionResult Index()
@@ -35,16 +36,22 @@ public class HomeController : Controller
 
     public IActionResult Login(LoginViewModel usuario)
     {
-        var usuarioLogeado = _repositorioLogin.ObtenerUsuario(usuario.Nombre,usuario.Contrasenia);
-        
+        try
+        {
+            var usuarioLogeado = _repositorioLogin.ObtenerUsuario(usuario.Nombre,usuario.Contrasenia);
+            //Registro el usuario
+            LogearUsuario(usuarioLogeado);
+            _logger.LogInformation("Usuario " + usuarioLogeado.NombreDeUsuario + " Ingresó correctamente");
+            return RedirectToRoute(new { controller = "Usuario", action = "Index" });
+        }
+        catch (Exception e)
+        {
+             _logger.LogError(e.ToString());
+            _logger.LogWarning("Usuario invalido - Nombre de usuario: " + usuario.Nombre + "/Contraseña: " + usuario.Contrasenia);
+        }
         // si el usuario no existe devuelvo al index
-        if (usuarioLogeado == null) return RedirectToAction("Index");
-
-         //Registro el usuario
-        LogearUsuario(usuarioLogeado);
-        
-        //Devuelvo el usuario al Home
-        return RedirectToRoute(new { controller = "Usuario", action = "Index" });
+            return RedirectToAction("Index");
+         
     }
 
      private void LogearUsuario(Usuario user)

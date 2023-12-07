@@ -9,7 +9,7 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
 {
     public class EditarUsuarioViewModel
     {
-         [Required(ErrorMessage = "Este campo es requerido.")]
+        [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Id Usuario")] 
         public int Id { get; set; }
         

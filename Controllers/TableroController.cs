@@ -36,14 +36,12 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
                 string rolUsuario = ObtenerRolUsuario(); 
                 if (rolUsuario == "administrador")
                 {
-                    //var tableros = _repositorioTablero.ListarTableros();
                     return View(ListarTableroViewModel());
                 }
                 else
                 {
-                       var idUsuario = HttpContext.Session.GetInt32("Id");
-                    // var tableros = _repositorioTablero.ListarTableroPorUsuario(idUsuario.Value);
-                        return View(ListarTableroPorUsuarioViewModel(idUsuario.Value));
+                    var idUsuario = HttpContext.Session.GetInt32("Id");
+                    return View(ListarTableroPorUsuarioViewModel(idUsuario.Value));
                     
                 }
            }
@@ -65,7 +63,8 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
 
                 var tablero = _repositorioTablero.ObtenerTableroPorId(id);
                 var tablerovm = new EditarTableroViewModel(tablero);
-                tablerovm.NombreUsuario = HttpContext.Session.GetString("Usuario");
+                var usuario = _repositorioUsuario.ObtenerUsuarioPorId(tablero.IdUsuarioPropietario);
+                tablerovm.NombreUsuario = usuario.NombreDeUsuario;
                 return View(tablerovm);
             }    
             return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
@@ -77,19 +76,26 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         public IActionResult EditarTablero(EditarTableroViewModel tablero)
         {
             if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
-
-                var tableroMod = _repositorioTablero.ObtenerTableroPorId(tablero.Id);
-                var usuarioPropietario = _repositorioUsuario.ObtenerUsuarioPorNombre(tablero.NombreUsuario);
-                if (usuarioPropietario.NombreDeUsuario != "")
+                try
                 {
-                    tableroMod.IdUsuarioPropietario = usuarioPropietario.Id;
-                }else
+                    var tableroMod = _repositorioTablero.ObtenerTableroPorId(tablero.Id);
+                    var usuarioPropietario = _repositorioUsuario.ObtenerUsuarioPorNombre(tablero.NombreUsuario);
+                    if (usuarioPropietario.NombreDeUsuario != "")
+                    {
+                        tableroMod.IdUsuarioPropietario = usuarioPropietario.Id;
+                    }else
+                    {
+                        tableroMod.IdUsuarioPropietario = tablero.Id_Usuario_Propietario;  
+                    }
+                    tableroMod.Nombre = tablero.Nombre;
+                    tableroMod.Descripcion = tablero.Descripcion;
+                    _repositorioTablero.ModificarTablero(tablero.Id,tableroMod);                    
+                    }
+                catch (Exception e)
                 {
-                    tableroMod.IdUsuarioPropietario = tablero.Id_Usuario_Propietario;  
+                    _logger.LogError(e.ToString());
                 }
-                tableroMod.Nombre = tablero.Nombre;
-                tableroMod.Descripcion = tablero.Descripcion;
-                _repositorioTablero.ModificarTablero(tablero.Id,tableroMod);
+
                 return RedirectToAction("Index");
             }
             return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
@@ -113,7 +119,14 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
                 var idUsuario = HttpContext.Session.GetInt32("Id");
                 var tablero = new Tablero(0,idUsuario.Value,t.Nombre,t.Descripcion);
-                _repositorioTablero.CrearTablero(tablero);
+                try
+                {
+                    _repositorioTablero.CrearTablero(tablero);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.ToString());
+                }
                 return RedirectToAction("Index");
             }
             return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
@@ -124,7 +137,15 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         public IActionResult EliminarTablero(int id)
         {
             if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
-                _repositorioTablero.EliminarTablero(id);
+                try
+                {
+                    _repositorioTablero.EliminarTablero(id);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.ToString());
+                }
+              
                 return RedirectToAction("Index");
             }    
             return (RedirectToRoute(new { Controller = "Home", action = "Index" }));

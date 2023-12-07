@@ -7,11 +7,15 @@
   <div class="mb-3">
     <label for="lbl.nombre" class="form-label" asp-for="NombreDeUsuario">Nombre de Usuario: </label>
     <input type="text" class="form-control" id="lbl.nombre" asp-for="NombreDeUsuario">
+    <span asp-validation-for="@Model.NombreDeUsuario" class="text-danger"></span>
+
   </div>
 
   <div class="mb-3">
     <label for="lbl.contrasenia" class="form-label" asp-for="Contrasenia">Contraseña: </label>
     <input type="password" class="form-control" id="lbl.contrasenia" asp-for="Contrasenia">
+    <span asp-validation-for="@Model.Contrasenia" class="text-danger"></span>
+
   </div>
 
   <div class="mb-3">

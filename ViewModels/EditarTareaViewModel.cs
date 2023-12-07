@@ -13,7 +13,7 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
         [Required (ErrorMessage ="Este campo es necesario")]
         [Display (Name="Nombre Tarea")]
         public string Nombre{get;set;}
-        public int? IdTablero {get; set;}
+        public int IdTablero {get; set;}
         [Required (ErrorMessage ="Este campo es necesario")]
         [Display (Name="Nombre Tablero")]
         public string NombreTablero {get; set;}
@@ -33,7 +33,7 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
         public EditarTareaViewModel()
         {
             this.Id=0;
-            this.IdTablero=null;
+            this.IdTablero=0;
             this.NombreTablero="";
             this.NombreUsuarioAsignado = "";
             this.EstadoT=0;

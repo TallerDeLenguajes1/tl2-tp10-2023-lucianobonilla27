@@ -24,16 +24,26 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         public string? Color{get;set;}
         public int IdUsuarioAsignado{get;set;}
 
-    // public Tarea(int id, int idTablero, string nombre, Estado estado, string? descripcion, string? color, int idUsuarioAsignado)
-    // {
-    //     Id = id;
-    //     IdTablero = idTablero;
-    //     Nombre = nombre;
-    //     EstadoT = estado;
-    //     Descripcion = descripcion;
-    //     Color = color;
-    //     IdUsuarioAsignado = idUsuarioAsignado;
-    // }
+        public Tarea(int id, int idTablero, string nombre, Estado estado, string? descripcion, string? color, int idUsuarioAsignado)
+        {
+            Id = id;
+            IdTablero = idTablero;
+            Nombre = nombre;
+            EstadoT = estado;
+            Descripcion = descripcion;
+            Color = color;
+            IdUsuarioAsignado = idUsuarioAsignado;
+        }
+
+        public Tarea(){
+            Id = 0;
+            IdTablero = 0;
+            Nombre = "";
+            EstadoT = 0;
+            Descripcion = "";
+            Color = "";
+            IdUsuarioAsignado = 0;
+        }
         
     }
 }
