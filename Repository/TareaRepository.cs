@@ -225,6 +225,45 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
             return tareas;
         }
 
+        public List<Tarea> ListarTareasPorTableros(List<int> idsTableros)
+        {
+            var tareas = new List<Tarea>();
+
+            // Construir la cadena IN dinámicamente
+            var inClause = string.Join(",", idsTableros);
+
+            // Consulta SQL con la cadena IN construida
+            var query = $"SELECT * FROM Tarea WHERE Id_Tablero IN ({inClause})";
+
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                connection.Open();
+                var command = new SQLiteCommand(query, connection);
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var tarea = new Tarea
+                        {
+                            Id = Convert.ToInt32(reader["Id"]),
+                            IdTablero = Convert.ToInt32(reader["Id_Tablero"]),
+                            Nombre = reader["Nombre"].ToString(),
+                            EstadoT = Enum.Parse<Tarea.Estado>(reader["Estado"].ToString()),
+                            Descripcion = reader["Descripcion"].ToString(),
+                            Color = reader["Color"].ToString(),
+                            IdUsuarioAsignado = Convert.ToInt32(reader["Id_Usuario_Asignado"])
+                        };
+                        tareas.Add(tarea);
+                    }
+                }
+            }
+
+            return tareas;
+        }
+
+
+
         public void EliminarTarea(int id)
         {
             var query = "DELETE FROM Tarea WHERE Id = @id";

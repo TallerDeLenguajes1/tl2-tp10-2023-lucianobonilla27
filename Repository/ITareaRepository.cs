@@ -14,7 +14,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Repository
         void ModificarTarea(int id, Tarea t);
         Tarea ObtenerTareaPorId(int id);
         List<Tarea> ListarPorUsuario(int idUsuario);
-
+        List<Tarea> ListarTareasPorTableros(List<int> idsTableros);
         List<Tarea> ListarTareas();
         void EliminarTarea(int id);
         void AsignarTareaAUsuario(int idTarea,int idUsuario);

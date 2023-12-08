@@ -175,36 +175,78 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
 
            
 
-            private List<IndexTareaViewModel> ListarTareasIndex(){
+            // private List<IndexTareaViewModel> ListarTareasIndex(){
+            //     var listaTareasIndex = new List<IndexTareaViewModel>();
+            //     var listaTareas = _repositorioTarea.ListarTareas();
+            //     foreach (var item in listaTareas)
+            //     {
+            //         Tablero? tab = _repositorioTablero.ObtenerTableroPorId(item.IdTablero);
+            //         Usuario? usu = _repositorioUsuario.ObtenerUsuarioPorId(item.IdUsuarioAsignado);
+            //         string? nombreUsuario;
+            //         string? nombreTablero;
+            //         if (usu != null)
+            //         {
+            //             nombreUsuario = usu.NombreDeUsuario;
+            //         }
+            //         else
+            //         {
+            //             nombreUsuario = null;
+            //         }
+            //         if (tab != null)
+            //         {
+            //             nombreTablero = tab.Nombre;
+            //         }
+            //         else
+            //         {
+            //             nombreTablero = null;
+            //         }
+            //         var tarvm = new IndexTareaViewModel(item, nombreUsuario, nombreTablero);
+            //         listaTareasIndex.Add(tarvm);
+            //     }
+            //     return listaTareasIndex;
+            // }
+
+            private List<IndexTareaViewModel> ListarTareasIndex()
+            {
                 var listaTareasIndex = new List<IndexTareaViewModel>();
-                var listaTareas = _repositorioTarea.ListarTareas();
-                foreach (var item in listaTareas)
+
+                // Obtener el id del usuario de sesión
+                var idUsuarioSesion = ObtenerIdUsuarioSesion();
+
+                // Obtener las tareas asignadas al usuario de sesión
+                var tareasAsignadas = _repositorioTarea.ListarPorUsuario(idUsuarioSesion);
+
+                // Obtener los tableros del usuario de sesión
+                var tablerosUsuario = _repositorioTablero.ListarTableroPorUsuario(idUsuarioSesion);
+
+                // Obtener las tareas de los tableros del usuario de sesión
+                var tareasPropias = _repositorioTarea.ListarTareasPorTableros(tablerosUsuario.Select(t => t.Id).ToList());
+
+                // Combinar y eliminar duplicados
+                var todasLasTareas = tareasAsignadas.Union(tareasPropias).Distinct().ToList();
+
+                foreach (var tarea in todasLasTareas)
                 {
-                    Tablero? tab = _repositorioTablero.ObtenerTableroPorId(item.IdTablero);
-                    Usuario? usu = _repositorioUsuario.ObtenerUsuarioPorId(item.IdUsuarioAsignado);
-                    string? nombreUsuario;
-                    string? nombreTablero;
-                    if (usu != null)
-                    {
-                        nombreUsuario = usu.NombreDeUsuario;
-                    }
-                    else
-                    {
-                        nombreUsuario = null;
-                    }
-                    if (tab != null)
-                    {
-                        nombreTablero = tab.Nombre;
-                    }
-                    else
-                    {
-                        nombreTablero = null;
-                    }
-                    var tarvm = new IndexTareaViewModel(item, nombreUsuario, nombreTablero);
+                    var tablero = _repositorioTablero.ObtenerTableroPorId(tarea.IdTablero);
+                    var usuarioAsignado = _repositorioUsuario.ObtenerUsuarioPorId(tarea.IdUsuarioAsignado);
+
+                    string? nombreUsuarioAsignado = usuarioAsignado?.NombreDeUsuario;
+                    string? nombreTablero = tablero?.Nombre;
+
+                    var tarvm = new IndexTareaViewModel(tarea, nombreUsuarioAsignado, nombreTablero);
                     listaTareasIndex.Add(tarvm);
                 }
+
                 return listaTareasIndex;
             }
+
+            // Método para obtener el id del usuario de sesión
+          private int ObtenerIdUsuarioSesion()
+            {
+                return HttpContext.Session.IsAvailable ? HttpContext.Session.GetInt32("Id") ?? 0 : 0;
+            }
+
+
 
         }
     }
