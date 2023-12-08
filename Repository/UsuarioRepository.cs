@@ -81,49 +81,65 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 
     public Usuario ObtenerUsuarioPorId(int id)
     {
-            SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
-            var usuario = new Usuario();
-            SQLiteCommand command = connection.CreateCommand();
-            command.CommandText = "SELECT * FROM usuario WHERE id = @idUsuario";
-            command.Parameters.Add(new SQLiteParameter("@idUsuario", id));
-            connection.Open();
-            using(SQLiteDataReader reader = command.ExecuteReader())
+        SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
+        var usuario = new Usuario();
+        SQLiteCommand command = connection.CreateCommand();
+        command.CommandText = "SELECT * FROM usuario WHERE id = @idUsuario";
+        command.Parameters.Add(new SQLiteParameter("@idUsuario", id));
+        connection.Open();
+        using (SQLiteDataReader reader = command.ExecuteReader())
+        {
+            // Si no hay filas, lanzar una excepción
+            if (!reader.HasRows)
             {
-                while (reader.Read())
-                {
-                    usuario.Id = Convert.ToInt32(reader["id"]);
-                    usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
-                    usuario.Contrasenia = reader["contrasenia"].ToString();
-                    usuario.RolUsuario = Enum.Parse<Usuario.Rol>(reader["rol"].ToString());
-                }
+                connection.Close();
+                throw new Exception("No se encontró el usuario");
             }
-            connection.Close();
 
-            return (usuario);
+            while (reader.Read())
+            {
+                usuario.Id = Convert.ToInt32(reader["id"]);
+                usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                usuario.Contrasenia = reader["contrasenia"].ToString();
+                usuario.RolUsuario = Enum.Parse<Usuario.Rol>(reader["rol"].ToString());
+            }
+        }
+        connection.Close();
+
+        return usuario;
     }
+
 
     public Usuario ObtenerUsuarioPorNombre(string nombre)
     {
         SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
-            var usuario = new Usuario();
-            SQLiteCommand command = connection.CreateCommand();
-            command.CommandText = "SELECT * FROM usuario WHERE nombre_de_usuario = @nombre";
-            command.Parameters.Add(new SQLiteParameter("@nombre", nombre));
-            connection.Open();
-            using(SQLiteDataReader reader = command.ExecuteReader())
+        var usuario = new Usuario();
+        SQLiteCommand command = connection.CreateCommand();
+        command.CommandText = "SELECT * FROM usuario WHERE nombre_de_usuario = @nombre";
+        command.Parameters.Add(new SQLiteParameter("@nombre", nombre));
+        connection.Open();
+        using (SQLiteDataReader reader = command.ExecuteReader())
+        {
+            // Si no hay filas, lanzar una excepción
+            if (!reader.HasRows)
             {
-                while (reader.Read())
-                {
-                    usuario.Id = Convert.ToInt32(reader["id"]);
-                    usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
-                    usuario.Contrasenia = reader["contrasenia"].ToString();
-                    usuario.RolUsuario = Enum.Parse<Usuario.Rol>(reader["rol"].ToString());
-                }
+                connection.Close();
+                throw new Exception("No se encontró el usuario");
             }
-            connection.Close();
 
-            return (usuario);
+            while (reader.Read())
+            {
+                usuario.Id = Convert.ToInt32(reader["id"]);
+                usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                usuario.Contrasenia = reader["contrasenia"].ToString();
+                usuario.RolUsuario = Enum.Parse<Usuario.Rol>(reader["rol"].ToString());
+            }
+        }
+        connection.Close();
+
+        return usuario;
     }
+
 
     public void EliminarUsuario(int id)
     {

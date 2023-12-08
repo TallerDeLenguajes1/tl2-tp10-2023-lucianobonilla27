@@ -145,24 +145,32 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 command.Parameters.Add(new SQLiteParameter("@id", id));
                 var reader = command.ExecuteReader();
 
+                // Si no hay filas, lanzar una excepción
+                if (!reader.HasRows)
+                {
+                    connection.Close();
+                    throw new Exception("No se encontró la tarea");
+                }
+
                 while (reader.Read())
                 {
-                    
-                        tarea.Id = Convert.ToInt32(reader["Id"]);
-                        tarea.IdTablero = Convert.ToInt32(reader["Id_Tablero"]);
-                        tarea.Nombre = reader["Nombre"].ToString();
-                        tarea.EstadoT = Enum.Parse<Tarea.Estado>(reader["Estado"].ToString());
-                        tarea.Descripcion = reader["Descripcion"].ToString();
-                        tarea.Color = reader["Color"].ToString();
-                        tarea.IdUsuarioAsignado = Convert.ToInt32(reader["Id_Usuario_Asignado"]);
+                    tarea.Id = Convert.ToInt32(reader["Id"]);
+                    tarea.IdTablero = Convert.ToInt32(reader["Id_Tablero"]);
+                    tarea.Nombre = reader["Nombre"].ToString();
+                    tarea.EstadoT = Enum.Parse<Tarea.Estado>(reader["Estado"].ToString());
+                    tarea.Descripcion = reader["Descripcion"].ToString();
+                    tarea.Color = reader["Color"].ToString();
+                    tarea.IdUsuarioAsignado = Convert.ToInt32(reader["Id_Usuario_Asignado"]);
                 }
-                connection.Clone();
+
+                connection.Close();
             }
 
             return tarea;
         }
 
-        public List<Tarea> ListarPorUsuario(int idUsuario)
+
+       public List<Tarea> ListarPorUsuario(int idUsuario)
         {
             var tareas = new List<Tarea>();
             var query = "SELECT * FROM Tarea WHERE Id_Usuario_Asignado = @idUsuario";
@@ -172,6 +180,13 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 var command = new SQLiteCommand(query, connection);
                 command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
                 var reader = command.ExecuteReader();
+
+                // Si no hay filas, lanzar una excepción
+                if (!reader.HasRows)
+                {
+                    connection.Close();
+                    throw new Exception("No se encontraron tareas para el usuario especificado");
+                }
 
                 while (reader.Read())
                 {
@@ -193,6 +208,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 
             return tareas;
         }
+
 
         public List<Tarea> ListarPorTablero(int id){
             var tareas = new List<Tarea>();
@@ -229,6 +245,11 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         {
             var tareas = new List<Tarea>();
 
+            if (idsTableros == null || !idsTableros.Any())
+            {
+                throw new ArgumentException("La lista de IDs de tableros no puede ser nula o vacía");
+            }
+
             // Construir la cadena IN dinámicamente
             var inClause = string.Join(",", idsTableros);
 
@@ -242,6 +263,13 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
+                    // Si no hay filas, lanzar una excepción
+                    if (!reader.HasRows)
+                    {
+                        connection.Close();
+                        throw new Exception("No se encontraron tareas para los tableros especificados");
+                    }
+
                     while (reader.Read())
                     {
                         var tarea = new Tarea
@@ -261,6 +289,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 
             return tareas;
         }
+
 
 
 

@@ -94,11 +94,17 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                     tablero.Nombre = reader["nombre"].ToString();
                     tablero.Descripcion = reader["descripcion"].ToString();
                 }
-                    connection.Close();
-                    return tablero;
-            }
 
-        
+                connection.Close();
+
+                // Lanzar una excepción si no se encontró ningún tablero
+                if (tablero.Id == 0)
+                {
+                    throw new Exception("Tablero no encontrado");
+                }
+
+                return tablero;
+            }
         }
         
         public Tablero ObtenerTableroPorNombre(string nombre)
@@ -119,8 +125,13 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                     tablero.Nombre = reader["nombre"].ToString();
                     tablero.Descripcion = reader["descripcion"].ToString();
                 }
-                    connection.Close();
-                    return tablero;
+                connection.Close();
+                    // Lanzar una excepción si no se encontró ningún tablero
+                if (tablero.Id == 0)
+                {
+                    throw new Exception("Tablero no encontrado");
+                }
+                return tablero;
             }
 
         
@@ -178,6 +189,13 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 command.Parameters.Add(new SQLiteParameter("@id", id));
                 var reader = command.ExecuteReader();
 
+                // Si no hay tableros, lanzar una excepción
+                if (!reader.HasRows)
+                {
+                    connection.Close();
+                    throw new Exception("No se encontraron tableros para el usuario");
+                }
+
                 while (reader.Read())
                 {
                     var tablero = new Tablero
@@ -195,6 +213,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 
             return tableros;
         }
+
     }
     
 }
