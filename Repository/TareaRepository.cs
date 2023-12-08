@@ -11,14 +11,18 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 {
     public class TareaRepository : ITareaRepository
     {
-       private string cadenaConexion = "Data Source=DB/kanbanV2.bd;Cache=Shared";
+       readonly string CadenaDeConexion;
+
+       public TareaRepository(string CadenaDeConexion){
+         this.CadenaDeConexion = CadenaDeConexion;
+       }
 
         public Tarea CrearTareaEnTablero(int idTablero,Tarea tarea)
         {
 
 
         var query = @"INSERT INTO Tarea (Id_Tablero, Nombre, Estado, Descripcion, Color, Id_Usuario_Asignado) VALUES (@idTablero, @nombre, @estado, @descripcion, @color, @idUsuarioAsignado)";
-        using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+        using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
         {
             connection.Open();
             var command = new SQLiteCommand(query, connection);
@@ -42,7 +46,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
        public List<Tarea> ListarTareas(){
              var tareas = new List<Tarea>();
             var query = "SELECT * FROM Tarea";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -73,7 +77,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         public void ModificarNombreTarea(int id, string nombreNuevo)
         {
             var query = @"UPDATE Tarea SET Nombre = @nombre WHERE id=@id";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -98,7 +102,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                             Id_Usuario_Asignado = @idUsuarioAsignado
                         WHERE Id = @id";
 
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -120,7 +124,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
          public void ModificarEstadoTarea(int id, int estadoNuevo)
         {
             var query = @"UPDATE Tarea SET estado = @estado WHERE id=@id";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -138,7 +142,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         {
             var tarea = new Tarea();
             var query = "SELECT * FROM Tarea WHERE Id = @id";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -174,7 +178,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         {
             var tareas = new List<Tarea>();
             var query = "SELECT * FROM Tarea WHERE Id_Usuario_Asignado = @idUsuario";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -182,11 +186,11 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 var reader = command.ExecuteReader();
 
                 // Si no hay filas, lanzar una excepción
-                if (!reader.HasRows)
-                {
-                    connection.Close();
-                    throw new Exception("No se encontraron tareas para el usuario especificado");
-                }
+                // if (!reader.HasRows)
+                // {
+                //     connection.Close();
+                //     throw new Exception("No se encontraron tareas para el usuario especificado");
+                // }
 
                 while (reader.Read())
                 {
@@ -213,7 +217,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         public List<Tarea> ListarPorTablero(int id){
             var tareas = new List<Tarea>();
             var query = "SELECT * FROM Tarea WHERE Id_tablero = @idTablero";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -256,7 +260,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
             // Consulta SQL con la cadena IN construida
             var query = $"SELECT * FROM Tarea WHERE Id_Tablero IN ({inClause})";
 
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -264,11 +268,10 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
                     // Si no hay filas, lanzar una excepción
-                    if (!reader.HasRows)
-                    {
-                        connection.Close();
-                        throw new Exception("No se encontraron tareas para los tableros especificados");
-                    }
+                    // if (!reader.HasRows)
+                    // {
+                    //     throw new Exception("No se encontraron tareas para los tableros especificados");
+                    // }
 
                     while (reader.Read())
                     {
@@ -284,6 +287,8 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                         };
                         tareas.Add(tarea);
                     }
+                        connection.Close();
+
                 }
             }
 
@@ -296,7 +301,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         public void EliminarTarea(int id)
         {
             var query = "DELETE FROM Tarea WHERE Id = @id";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -310,7 +315,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         public void AsignarTareaAUsuario(int idTarea, int idUsuario)
         {
             var query = "UPDATE Tarea SET Id_Usuario_Asignado = @idUsuario WHERE Id = @idTarea";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);

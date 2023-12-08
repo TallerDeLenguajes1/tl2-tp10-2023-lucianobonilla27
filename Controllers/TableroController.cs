@@ -187,25 +187,30 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             return ListaTablerosViewModel;
         }
 
-        private List<IndexTableroViewModel> ListarTableroPorUsuarioViewModel(int id){
-            var ListaTablerosViewModel = new List<IndexTableroViewModel>();
-            var listaTablero = _repositorioTablero.ListarTableroPorUsuario(id);
-            foreach (var item in listaTablero)
+        // 
+        private List<IndexTableroViewModel> ListarTableroPorUsuarioViewModel(int idUsuario)
+        {
+            var listaTablerosViewModel = new List<IndexTableroViewModel>();
+
+            // Obtener los tableros del usuario propietario
+            var tablerosPropios = _repositorioTablero.ListarTableroPorUsuario(idUsuario);
+
+            // Obtener los tableros en los que el usuario tiene alguna tarea asignada
+            var tablerosConTareasAsignadas = _repositorioTablero.ListarTablerosConTareasAsignadas(idUsuario);
+
+            // Combinar ambas listas y eliminar duplicados
+            var tablerosUnicos = tablerosPropios.Concat(tablerosConTareasAsignadas).Distinct().ToList();
+
+            foreach (var tablero in tablerosUnicos)
             {
-                Usuario? Usu = _repositorioUsuario.ObtenerUsuarioPorId(item.IdUsuarioPropietario);
-                string? nombre;
-                if (Usu != null)
-                {
-                    nombre = Usu.NombreDeUsuario;
-                }
-                else
-                {
-                    nombre = null;
-                }
-                var TableroVM = new IndexTableroViewModel(item, nombre);
-                ListaTablerosViewModel.Add(TableroVM);
+                Usuario? usuarioPropietario = _repositorioUsuario.ObtenerUsuarioPorId(tablero.IdUsuarioPropietario);
+                string? nombreUsuarioPropietario = usuarioPropietario?.NombreDeUsuario;
+                var tableroViewModel = new IndexTableroViewModel(tablero, nombreUsuarioPropietario);
+                listaTablerosViewModel.Add(tableroViewModel);
             }
-            return ListaTablerosViewModel;
+
+            return listaTablerosViewModel;
         }
+
     }
 }

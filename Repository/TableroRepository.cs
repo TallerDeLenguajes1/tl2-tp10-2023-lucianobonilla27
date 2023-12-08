@@ -11,10 +11,14 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 {
     public class TableroRepository : ITableroRepository
     {
-        private string cadenaConexion = "Data Source=DB/kanbanV2.bd;Cache=Shared";
+       readonly string CadenaDeConexion;
+
+       public TableroRepository(string CadenaDeConexion){
+         this.CadenaDeConexion = CadenaDeConexion;
+       }   
         public void CrearTablero(Tablero t){
             var query = @"INSERT INTO Tablero (id_usuario_propietario, nombre, descripcion) VALUES (@id, @nombre, @descripcion)";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
 
                 connection.Open();
@@ -32,7 +36,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         public void ModificarTablero(int id, Tablero tableroModificado)
         {
             var query = @"UPDATE Tablero SET nombre = @nombre, descripcion = @descripcion, id_usuario_propietario = @idPropietario WHERE id = @id;";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -52,7 +56,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         {
             var tableros = new List<Tablero>();
             var query = "SELECT * FROM Tablero";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -79,7 +83,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         public Tablero ObtenerTableroPorId(int id)
         {
             var query = "SELECT * FROM Tablero WHERE id = @id";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var tablero = new Tablero();
@@ -110,7 +114,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         public Tablero ObtenerTableroPorNombre(string nombre)
         {
             var query = "SELECT * FROM Tablero WHERE nombre = @nombre";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var tablero = new Tablero();
@@ -136,10 +140,51 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
 
         
         }
+
+        public List<Tablero> ListarTablerosConTareasAsignadas(int idUsuario)
+        {
+            var tablerosConTareasAsignadas = new List<Tablero>();
+
+            var query = @"
+                SELECT DISTINCT Tablero.*
+                FROM Tablero
+                JOIN Tarea ON Tablero.Id = Tarea.Id_Tablero
+                WHERE Tarea.Id_Usuario_Asignado = @idUsuario
+            ";
+
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
+            {
+                connection.Open();
+
+                var command = new SQLiteCommand(query, connection);
+                command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var tablero = new Tablero
+                        {
+                            Id = Convert.ToInt32(reader["Id"]),
+                            IdUsuarioPropietario = Convert.ToInt32(reader["Id_Usuario_Propietario"]),
+                            Nombre = reader["Nombre"].ToString(),
+                            Descripcion = reader["Descripcion"].ToString()
+                        };
+
+                        tablerosConTareasAsignadas.Add(tablero);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return tablerosConTareasAsignadas;
+        }
+
         public int ObtenerIdTableroPorUsuario(int idUsuarioPropietario)
         {
             var query = "SELECT id FROM Tablero WHERE id_usuario_propietario = @idUsuarioPropietario";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -167,7 +212,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         public void EliminarTablero(int id)
         {
             var query = "DELETE FROM Tablero WHERE id = @id";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
@@ -182,7 +227,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         {
             var tableros = new List<Tablero>();
             var query = "SELECT * FROM Tablero WHERE id_usuario_propietario = @id";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
             {
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
