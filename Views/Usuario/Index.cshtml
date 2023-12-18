@@ -1,10 +1,17 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Usuario Page";
 }
+
 @using tl2_tp09_2023_lucianobonilla27.Models;
-@model List<Usuario>
+@using tl2_tp10_2023_lucianobonilla27.ViewModels;
+@model UsuarioViewModel
+
 <h2>Usuarios List</h2>
-<a asp-controller="Usuario" asp-action="CrearUsuario" class="btn btn-primary">Crear Nuevo Usuario</a>
+
+@if (Model.RolUsuario == "administrador")
+{
+    <a asp-controller="Usuario" asp-action="CrearUsuario" class="btn btn-primary">Crear Nuevo Usuario</a>
+}
 
 <table class="table table-light">
     <thead>
@@ -12,23 +19,29 @@
             <th hidden>Id</th>
             <th>Nombre</th>
             <th>Rol</th>
+            @if (Model.RolUsuario == "administrador")
+            {
             <th>Acciones</th>
+            }
         </tr>
     </thead>
     <tbody>
-        @foreach (var usuario in Model)
+        @foreach (var usuario in Model.ListaUsuarios)
         {
             <tr>
                 <td hidden>@usuario.Id</td>
                 <td>@usuario.NombreDeUsuario</td>
                 <td>@usuario.RolUsuario</td>
-                <td>
-                    <a asp-controller="Usuario" asp-action="EditarUsuario" asp-route-id="@usuario.Id" class="btn btn-primary">Editar</a>
-                    <form asp-controller="Usuario" asp-action="EliminarUsuario" method="post" onsubmit="return confirm('¿Estás seguro que quieres eliminar el usuario?')">
-                        <input type="hidden" name="id" value="@usuario.Id" />
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                    </form>
-                </td>
+               @if (Model.RolUsuario == "administrador")
+                {
+                    <td>
+                        <a asp-controller="Usuario" asp-action="EditarUsuario" asp-route-id="@usuario.Id" class="btn btn-primary">Editar</a>
+                        <form asp-controller="Usuario" asp-action="EliminarUsuario" method="post" onsubmit="return confirm('¿Estás seguro que quieres eliminar el usuario?')">
+                            <input type="hidden" name="id" value="@usuario.Id" />
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                }
             </tr>
         }
     </tbody>

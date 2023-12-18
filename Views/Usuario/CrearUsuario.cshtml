@@ -18,6 +18,15 @@
 
   </div>
 
+    <div class="mb-3">
+    <label for="lbl.contraseniaRep" class="form-label" asp-for="ContraseniaRep">Contraseña: </label>
+    <input type="password" class="form-control" id="lbl.contraseniaRep" asp-for="ContraseniaRep">
+    <span asp-validation-for="@Model.ContraseniaRep" class="text-danger"></span>
+
+  </div>
+
+  
+
   <div class="mb-3">
     <label for="lbl.rol" class="form-label" asp-for="RolUsuario">Rol: </label>
     <select class="form-control" id="lbl.rol" asp-for="RolUsuario">

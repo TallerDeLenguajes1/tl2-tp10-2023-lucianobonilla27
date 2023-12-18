@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor(); // Agregado
 builder.Services.AddDistributedMemoryCache();
+
 var CadenaDeConexion = builder.Configuration.GetConnectionString("SqliteConexion")!;
 builder.Services.AddSingleton<string>(CadenaDeConexion);
 

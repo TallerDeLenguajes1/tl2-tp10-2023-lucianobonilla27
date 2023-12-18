@@ -21,15 +21,19 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")] 
         public string? Contrasenia { get; set; }
+        [DataType(DataType.Password)]
+        [Compare("Contrasenia", ErrorMessage = "Las contraseñas no coinciden")]
+        public string? ContraseniaRep { get; set; }
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Rol usuario")] 
         public Usuario.Rol RolUsuario { get; set; }
 
-        public EditarUsuarioViewModel(int id,string nombre,string contrasenia,Usuario.Rol rol){
+        public EditarUsuarioViewModel(int id,string nombre,string contrasenia,string ContraseniaRep,Usuario.Rol rol){
             this.Id = id;
             this.NombreDeUsuario = nombre;
             this.Contrasenia = contrasenia;
+            this.ContraseniaRep = ContraseniaRep;
             this.RolUsuario = rol;
         }
 
@@ -37,6 +41,7 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
             this.Id = 0;
             this.NombreDeUsuario = "";
             this.Contrasenia = "";
+            this.ContraseniaRep = "";
             this.RolUsuario = 0;
         }
     }

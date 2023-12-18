@@ -28,6 +28,8 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
         [Display (Name="Nombre Usuario asignado")]
         public string? NombreUsuarioAsignado {get; set;}
         public int? IdUsuarioAsignado {get; set;}
+        public List<Usuario> Usuarios {get; set;}
+        public List<Tablero> Tableros {get; set;} 
 
 
         public CrearTareaViewModel()
@@ -40,6 +42,8 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
             this.Descripcion="";
             this.Color="";
             this.IdUsuarioAsignado=null;
+            Usuarios = new List<Usuario>();
+            Tableros = new List<Tablero>();
         }
 
         

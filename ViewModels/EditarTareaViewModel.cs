@@ -29,17 +29,22 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
         public string? NombreUsuarioAsignado {get; set;}
         public int? IdUsuarioAsignado {get; set;}
 
+        public List<Usuario> Usuarios {get; set;}
+        public List<Tablero> Tableros {get; set;}
+
 
         public EditarTareaViewModel()
         {
             this.Id=0;
             this.IdTablero=0;
             this.NombreTablero="";
-            this.NombreUsuarioAsignado = "";
+            this.NombreUsuarioAsignado = null;
             this.EstadoT=0;
             this.Descripcion="";
-            this.Color="";
+            this.Color=null;
             this.IdUsuarioAsignado=null;
+            Usuarios = new List<Usuario>();
+            Tableros = new List<Tablero>();
         }
 
         

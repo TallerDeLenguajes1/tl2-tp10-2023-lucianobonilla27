@@ -28,7 +28,7 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
         this.EstadoT=0;
         this.Descripcion="";
         this.Color="";
-        this.IdUsuarioAsignado=0;
+        this.IdUsuarioAsignado=null;
         this.NombreUsuarioAsignado =null;
         this.NombreTablero=null;
         }

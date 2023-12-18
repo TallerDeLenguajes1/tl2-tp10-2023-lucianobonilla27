@@ -21,9 +21,7 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
     [Display(Name = "Propietario")]
     public int Id_Usuario_Propietario { get; set; }
 
-    [Display(Name = "Nombre de Usuario")]
-    [Required(ErrorMessage = "El nombre de usuario es requerido")]
-    public string? NombreUsuario { get; set; }
+
     
    
     
@@ -33,7 +31,7 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
         this.Nombre = t.Nombre;
         this.Descripcion = t.Descripcion;
         this.Id_Usuario_Propietario = t.IdUsuarioPropietario;
-        this.NombreUsuario = "";
+   
     }
      public EditarTableroViewModel()
     {
@@ -41,7 +39,7 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
         Nombre="";
         Descripcion="";
         Id_Usuario_Propietario=0;
-        NombreUsuario=null;
+    
     }
     }
 }

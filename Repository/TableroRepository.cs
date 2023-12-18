@@ -235,11 +235,11 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 var reader = command.ExecuteReader();
 
                 // Si no hay tableros, lanzar una excepción
-                if (!reader.HasRows)
-                {
-                    connection.Close();
-                    throw new Exception("No se encontraron tableros para el usuario");
-                }
+                // if (!reader.HasRows)
+                // {
+                //     connection.Close();
+                //     throw new Exception("No se encontraron tableros para el usuario");
+                // }
 
                 while (reader.Read())
                 {

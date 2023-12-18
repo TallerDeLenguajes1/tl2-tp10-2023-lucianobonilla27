@@ -16,37 +16,51 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
     [Route("[controller]")]
     public class TableroController : Controller
     {
-         private ITableroRepository _repositorioTablero;
+        private ITableroRepository _repositorioTablero;
         private IUsuarioRepository _repositorioUsuario;
+        private ITareaRepository _repositorioTarea;
         private readonly ILogger<TableroController> _logger;
-        // private TableroRepository _repositorioTablero;
-        // private UsuarioRepository _repositorioUsuario;
 
-        public TableroController(ILogger<TableroController> logger, ITableroRepository repositorioTablero, IUsuarioRepository repositorioUsuario)
+
+        public TableroController(ILogger<TableroController> logger, ITableroRepository repositorioTablero, IUsuarioRepository repositorioUsuario,ITareaRepository reposirotioTarea)
         {
             _repositorioTablero=repositorioTablero;
             _repositorioUsuario=repositorioUsuario;
+            _repositorioTarea = reposirotioTarea;
             _logger = logger;
         }
 
-        [Route("Index")]
+       [Route("Index")]
         public IActionResult Index()
         {
-            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
-                string rolUsuario = ObtenerRolUsuario(); 
+            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
+            {
+                string rolUsuario = ObtenerRolUsuario();
+
                 if (rolUsuario == "administrador")
                 {
-                    return View(ListarTableroViewModel());
+                    var viewModel = new TablerosViewModel
+                    {
+                        Tableros = ListarTableroViewModel(),
+                        usuarioSesion = ObtenerIdUsuarioSesion()
+                    };
+                    return View(viewModel);
                 }
                 else
                 {
                     var idUsuario = HttpContext.Session.GetInt32("Id");
-                    return View(ListarTableroPorUsuarioViewModel(idUsuario.Value));
-                    
+                    var viewModel = new TablerosViewModel
+                    {
+                        Tableros = ListarTableroPorUsuarioViewModel(idUsuario.Value),
+                        usuarioSesion = ObtenerIdUsuarioSesion()
+                    };
+                    return View(viewModel);
                 }
-           }
-            return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
+            }
+
+            return RedirectToAction("Index", "Home");
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -63,8 +77,6 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
 
                 var tablero = _repositorioTablero.ObtenerTableroPorId(id);
                 var tablerovm = new EditarTableroViewModel(tablero);
-                var usuario = _repositorioUsuario.ObtenerUsuarioPorId(tablero.IdUsuarioPropietario);
-                tablerovm.NombreUsuario = usuario.NombreDeUsuario;
                 return View(tablerovm);
             }    
             return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
@@ -79,14 +91,9 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
                 try
                 {
                     var tableroMod = _repositorioTablero.ObtenerTableroPorId(tablero.Id);
-                    var usuarioPropietario = _repositorioUsuario.ObtenerUsuarioPorNombre(tablero.NombreUsuario);
-                    if (usuarioPropietario.NombreDeUsuario != "")
-                    {
-                        tableroMod.IdUsuarioPropietario = usuarioPropietario.Id;
-                    }else
-                    {
-                        tableroMod.IdUsuarioPropietario = tablero.Id_Usuario_Propietario;  
-                    }
+            
+                      tableroMod.IdUsuarioPropietario = tablero.Id_Usuario_Propietario;  
+                    
                     tableroMod.Nombre = tablero.Nombre;
                     tableroMod.Descripcion = tablero.Descripcion;
                     _repositorioTablero.ModificarTablero(tablero.Id,tableroMod);                    
@@ -136,21 +143,38 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         [Route("EliminarTablero")]
         public IActionResult EliminarTablero(int id)
         {
-            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
+            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
+            {
                 try
                 {
+                    // Obtener el tablero antes de intentar eliminarlo
+                    var tablero = _repositorioTablero.ObtenerTableroPorId(id);
+
+                    // Verificar si el tablero tiene tareas asignadas
+                    var tareasEnTablero = _repositorioTarea.ListarPorTablero(id);
+
+                    if (tareasEnTablero.Any())
+                    {
+                        // Logear el error porque el tablero tiene tareas asignadas
+                        _logger.LogError($"No se puede eliminar el tablero '{tablero.Nombre}' porque tiene tareas asignadas.");
+                        return RedirectToAction("Index");
+                    }
+
+                    // Si no hay tareas en el tablero, proceder con la eliminación
                     _repositorioTablero.EliminarTablero(id);
                 }
                 catch (Exception e)
                 {
+                    // Logear cualquier otro error durante la eliminación del tablero
                     _logger.LogError(e.ToString());
                 }
-              
-                return RedirectToAction("Index");
-            }    
-            return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
 
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("Index");
         }
+
         
         private string ObtenerRolUsuario()
         {
@@ -211,6 +235,12 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
 
             return listaTablerosViewModel;
         }
+
+           // Método para obtener el id del usuario de sesión
+          private int ObtenerIdUsuarioSesion()
+            {
+                return HttpContext.Session.IsAvailable ? HttpContext.Session.GetInt32("Id") ?? 0 : 0;
+            }
 
     }
 }

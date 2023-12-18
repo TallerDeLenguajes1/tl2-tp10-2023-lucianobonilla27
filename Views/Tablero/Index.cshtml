@@ -1,8 +1,8 @@
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Tablero Page";
 }
 @using tl2_tp10_2023_lucianobonilla27.ViewModels;
-@model List<IndexTableroViewModel>
+@model TablerosViewModel;
 
 <h2>Tableros List</h2>
 <a asp-controller="Tablero" asp-action="CrearTablero" class="btn btn-primary">Crear Nuevo Tablero</a>
@@ -18,7 +18,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var tablero in Model)
+        @foreach (var tablero in Model.Tableros)
         {
             <tr>
                 <td hidden>@tablero.Id</td>
@@ -26,11 +26,18 @@
                 <td>@tablero.Nombre</td>
                 <td>@tablero.Descripcion</td>
                 <td>
-                    <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-id="@tablero.Id" class="btn btn-primary">Editar</a>
-                    <form asp-controller="Tablero" asp-action="EliminarTablero" method="post" onsubmit="return confirm('¿Estás seguro que quieres eliminar el tablero?')">
-                        <input type="hidden" name="id" value="@tablero.Id" />
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                    </form>
+                    @if (tablero.Id_Usuario_Propietario == @Model.usuarioSesion)
+                    {
+                        <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-id="@tablero.Id" class="btn btn-primary">Editar</a>
+                        <form asp-controller="Tablero" asp-action="EliminarTablero" method="post" onsubmit="return confirm('¿Estás seguro que quieres eliminar el tablero?')">
+                            <input type="hidden" name="id" value="@tablero.Id" />
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p>No tienes permisos para editar/eliminar este tablero.</p>
+                    }
                 </td>
             </tr>
         }

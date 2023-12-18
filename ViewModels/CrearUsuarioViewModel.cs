@@ -23,6 +23,10 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
     [Display(Name = "Contraseña")] 
     public string Contrasenia { get; set; }
 
+    [DataType(DataType.Password)]
+    [Compare("Contrasenia", ErrorMessage = "Las contraseñas no coinciden")]
+    public string ContraseniaRep { get; set; }
+
     [Required(ErrorMessage = "Este campo es requerido.")]
     [Display(Name = "Rol usuario")] 
     public Usuario.Rol RolUsuario { get; set; }

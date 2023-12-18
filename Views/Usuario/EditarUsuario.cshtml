@@ -28,6 +28,13 @@
         <input asp-for="Contrasenia" class="form-control" />
         <p>Si este campo queda en blanco se sigue usando la Contraseña anterior</p>
     </div>
+    <div class="mb-3">
+        <label class="form-label" asp-for="ContraseniaRep">Contraseña: </label>
+        <input asp-for="ContraseniaRep" class="form-control" />
+        <span asp-validation-for="@Model.ContraseniaRep" class="text-danger"></span>
+
+        
+    </div>
 
     <button class="btn btn-primary" type="submit">Guardar Cambios</button>
 </form>

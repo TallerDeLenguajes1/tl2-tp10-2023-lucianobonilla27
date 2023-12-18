@@ -7,11 +7,18 @@
     <input type="hidden" asp-for="Id" />
 
     <div class="mb-3">
-        <input type="hidden" asp-for="IdTablero" class="form-control"/>
         <label class="form-label" asp-for="NombreTablero">Nombre Tablero</label>
-        <input asp-for="NombreTablero" class="form-control"/>
+        <select asp-for="NombreTablero" class="form-control">
+            <option value="">Seleccione un tablero</option>
+            @foreach (var tablero in Model.Tableros)
+            {
+                <option value="@tablero.Nombre">@tablero.Nombre</option>
+            }
+        </select>
+        <p>Si no figuran tableros primero debe crear uno</p>
         <span asp-validation-for="@Model.NombreTablero" class="text-danger"></span>
     </div>
+
 
     <div class="mb-3">
         <label class="form-label" asp-for="Nombre">Nombre Tarea: </label>
@@ -33,6 +40,8 @@
     <div class="mb-3">
         <label class="form-label" asp-for="Descripcion">Descripción: </label>
         <input asp-for="Descripcion" class="form-control" />
+        <span asp-validation-for="@Model.Descripcion" class="text-danger"></span>
+
     </div>
 
     <div class="mb-3">
@@ -40,12 +49,16 @@
         <input asp-for="Color" class="form-control" />
     </div>
 
-    <div class="mb-3">
-        <input type="hidden" asp-for="IdUsuarioAsignado" class="form-control" />
-        <label class="form-label" asp-for="NombreUsuarioAsignado">Nombre Usuario Asignado: </label>
-        <input asp-for="NombreUsuarioAsignado" class="form-control"/>
-
-    </div>
+   <div class="mb-3">
+    <label asp-for="@Model.IdUsuarioAsignado">Usuario Asignado</label>
+    <select class="form-select" asp-for="@Model.IdUsuarioAsignado" aria-label="Default select example">
+    <option value=@null></option>
+    @foreach(var item in Model.Usuarios)
+    {
+        <option value="@item.Id">@item.NombreDeUsuario</option>
+    }
+    </select>
+   </div>
 
     <button class="btn btn-primary" type="submit">Crear Tarea</button>
 </form>

@@ -32,10 +32,28 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         [Route("Index")]
         public IActionResult Index()
         {
-            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
+            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null && HttpContext.Session.GetString("NivelAcceso") != "administrador"){
                     return View(ListarTareasIndex());
             }
+            else if(HttpContext.Session.IsAvailable && HttpContext.Session.GetString("NivelAcceso") == "administrador")
+            {
+                var tareas = _repositorioTarea.ListarTareas();
+                List<IndexTareaViewModel> tareasvm = new List<IndexTareaViewModel>();
+                foreach (var tarea in tareas)
+                {
+                    var tablero = _repositorioTablero.ObtenerTableroPorId(tarea.IdTablero);
+                    var usuarioAsignado = _repositorioUsuario.ObtenerUsuarioPorId(tarea.IdUsuarioAsignado);
+
+                    string? nombreUsuarioAsignado = usuarioAsignado?.NombreDeUsuario;
+                    string? nombreTablero = tablero?.Nombre;
+
+                    var tarvm = new IndexTareaViewModel(tarea, nombreUsuarioAsignado, nombreTablero);
+                    tareasvm.Add(tarvm);
+                }
+                return View(tareasvm);
+            }
              return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
+             
         }
 
             [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -45,12 +63,12 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             }
 
 
-            [HttpGet]
+           [HttpGet]
             [Route("EditarTarea")]
             public IActionResult EditarTarea(int id)
             {
-                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
-
+                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
+                {
                     var tarea = _repositorioTarea.ObtenerTareaPorId(id);
                     var tareaVm = new EditarTareaViewModel();
                     tareaVm.Id = tarea.Id;
@@ -60,97 +78,113 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
                     tareaVm.IdTablero = tarea.IdTablero;
                     tareaVm.IdUsuarioAsignado = tarea.IdUsuarioAsignado;
                     tareaVm.Nombre = tarea.Nombre;
-                    var usu = _repositorioUsuario.ObtenerUsuarioPorId(tarea.IdUsuarioAsignado);
-                    tareaVm.NombreUsuarioAsignado = usu.NombreDeUsuario;
+                    tareaVm.Usuarios = _repositorioUsuario.ListarUsuarios();
+                    tareaVm.Tableros = _repositorioTablero.ListarTableroPorUsuario(ObtenerIdUsuarioSesion());
+                    if (tarea.IdUsuarioAsignado != null)
+                    {
+                        var usu = _repositorioUsuario.ObtenerUsuarioPorId(tarea.IdUsuarioAsignado);
+                        tareaVm.NombreUsuarioAsignado = usu.NombreDeUsuario;
+                    }
                     var tab = _repositorioTablero.ObtenerTableroPorId(tarea.IdTablero);
                     tareaVm.NombreTablero = tab.Nombre;
                     return View(tareaVm);
                 }
-                return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
-
+                return RedirectToAction("Index", "Home");
             }
 
             [HttpPost]
             [Route("EditarTarea")]
             public IActionResult EditarTarea(int id, EditarTareaViewModel modificada)
             {
-                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
+                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
+                {
                     try
                     {
                         var tarea = _repositorioTarea.ObtenerTareaPorId(id);
-                        var usuario = _repositorioUsuario.ObtenerUsuarioPorNombre(modificada.NombreUsuarioAsignado);
                         var tablero = _repositorioTablero.ObtenerTableroPorNombre(modificada.NombreTablero);
-                        int usuarioAsignado; // creo esta variable ya que en el constructor de tarea no puedo manda modificada.IdUsuarioAsignado
-                        if (usuario != null)
+                        
+                        if (modificada.IdUsuarioAsignado.HasValue && modificada.IdUsuarioAsignado == -1)
                         {
-                            usuarioAsignado = usuario.Id;
-                        }else
-                        {
-                            usuarioAsignado = tarea.IdUsuarioAsignado;
+                            // Ningún usuario asignado
+                            modificada.IdUsuarioAsignado = null;
                         }
-                         
+
                         if (tablero != null)
                         {
                             modificada.IdTablero = tablero.Id;
-                        }else
+                        }
+                        else
                         {
                             modificada.IdTablero = tarea.IdTablero;
                         }
-                        _repositorioTarea.ModificarTarea(id, new Tarea(modificada.Id,modificada.IdTablero,modificada.Nombre,modificada.EstadoT,modificada.Descripcion,modificada.Color,usuarioAsignado));
+
+                        _repositorioTarea.ModificarTarea(id, new Tarea(modificada.Id, modificada.IdTablero, modificada.Nombre, modificada.EstadoT, modificada.Descripcion, modificada.Color, modificada.IdUsuarioAsignado));
                     }
                     catch (Exception e)
                     {
                         _logger.LogError(e.ToString());
                     }
-                    
+
                     return RedirectToAction("Index");
                 }
-                return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
 
+                return RedirectToAction("Index", "Home");
             }
 
-            [HttpGet]
-            [Route("CrearTarea")]
-            public IActionResult CrearTarea()
+
+         [HttpGet]
+        [Route("CrearTarea")]
+        public IActionResult CrearTarea()
+        {
+            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
             {
-                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
-                     return View(new CrearTareaViewModel());
-                }
-                return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
-
+                var CrearTareaVm = new CrearTareaViewModel();
+                CrearTareaVm.Usuarios = _repositorioUsuario.ListarUsuarios();
+                CrearTareaVm.Tableros = _repositorioTablero.ListarTableroPorUsuario(ObtenerIdUsuarioSesion());
+                return View(CrearTareaVm);
             }
+            return RedirectToAction("Index", "Home");
+        }
 
-            [HttpPost]
-            [Route("CrearTarea")]
-            public IActionResult CrearTarea(CrearTareaViewModel nueva)
+        [HttpPost]
+        [Route("CrearTarea")]
+        public IActionResult CrearTarea(CrearTareaViewModel nueva)
+        {
+            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
             {
-                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
-                
-                   try
-                   {
-                        var tarea = new Tarea();
-                        tarea.Id = nueva.Id;
-                        tarea.Color = nueva.Color;
-                        tarea.Descripcion = nueva.Descripcion;
-                        tarea.Nombre = nueva.Nombre;
-                        tarea.EstadoT = nueva.EstadoT;
-                        var usu = _repositorioUsuario.ObtenerUsuarioPorNombre(nueva.NombreUsuarioAsignado);
-                        tarea.IdUsuarioAsignado = usu.Id;
-                        var tab = _repositorioTablero.ObtenerTableroPorNombre(nueva.NombreTablero);
-                        _repositorioTarea.CrearTareaEnTablero(tab.Id,tarea);
-                   }
-                   catch (Exception e)
-                   {
-                        _logger.LogError(e.ToString());
-                   }
-                    
-                    return RedirectToAction("Index");
-                
-                   
-                }
-                return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
+                try
+                {
+                    var tarea = new Tarea();
+                    tarea.Id = nueva.Id;
+                    tarea.Color = nueva.Color;
+                    tarea.Descripcion = nueva.Descripcion;
+                    tarea.Nombre = nueva.Nombre;
+                    tarea.EstadoT = nueva.EstadoT;
 
+                    if (nueva.IdUsuarioAsignado.HasValue)
+                    {
+                        tarea.IdUsuarioAsignado = nueva.IdUsuarioAsignado;
+                    }
+                    else
+                    {
+                        tarea.IdUsuarioAsignado = null;
+                    }
+
+                    var tab = _repositorioTablero.ObtenerTableroPorNombre(nueva.NombreTablero);
+                    _repositorioTarea.CrearTareaEnTablero(tab.Id, tarea);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.ToString());
+                }
+
+                return RedirectToAction("Index");
             }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
 
             [HttpPost]
             [Route("EliminarTarea")]
@@ -228,6 +262,7 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
                 foreach (var tarea in todasLasTareas)
                 {
                     var tablero = _repositorioTablero.ObtenerTableroPorId(tarea.IdTablero);
+
                     var usuarioAsignado = _repositorioUsuario.ObtenerUsuarioPorId(tarea.IdUsuarioAsignado);
 
                     string? nombreUsuarioAsignado = usuarioAsignado?.NombreDeUsuario;
@@ -239,6 +274,7 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
 
                 return listaTareasIndex;
             }
+
 
             // Método para obtener el id del usuario de sesión
           private int ObtenerIdUsuarioSesion()

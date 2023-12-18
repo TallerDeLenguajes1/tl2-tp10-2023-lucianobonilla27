@@ -81,8 +81,12 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
         return usuarios;
     }
 
-    public Usuario ObtenerUsuarioPorId(int id)
+    public Usuario ObtenerUsuarioPorId(int? id)
     {
+        if (id == null)
+        {
+            return null;
+        }
         SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion);
         var usuario = new Usuario();
         SQLiteCommand command = connection.CreateCommand();

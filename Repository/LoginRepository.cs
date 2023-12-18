@@ -17,13 +17,16 @@ namespace tl2_tp10_2023_lucianobonilla27.Repository
     }
     public class LoginRepository : ILoginRepository
     {
-        private string cadenaConexion = "Data Source=DB/kanbanV2.bd;Cache=Shared";
+    readonly string CadenaDeConexion;
 
+     public LoginRepository(string CadenaDeConexion){
+         this.CadenaDeConexion = CadenaDeConexion;
+       }   
     public bool ValidarCredenciales(string nombreDeUsuario, string contrasenia)
     {
         string query = "SELECT COUNT(*) FROM Usuario WHERE Nombre_De_Usuario = @nombreDeUsuario AND Contrasenia = @contrasenia";
 
-        using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+        using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
         {
             connection.Open();
 
@@ -45,7 +48,7 @@ namespace tl2_tp10_2023_lucianobonilla27.Repository
     {
         string query = "SELECT Rol FROM Usuario WHERE Nombre_De_Usuario = @nombreDeUsuario";
 
-        using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+        using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
         {
             connection.Open();
 
@@ -65,7 +68,7 @@ namespace tl2_tp10_2023_lucianobonilla27.Repository
     {
         string query = "SELECT * FROM Usuario WHERE Nombre_De_Usuario = @nombreDeUsuario AND Contrasenia = @contrasenia";
 
-        using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+        using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
         {
             connection.Open();
 

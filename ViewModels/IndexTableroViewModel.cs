@@ -17,6 +17,8 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
         public int? Id_Usuario_Propietario { get; set; }
         public string? NombreUsuario {get; set;}
 
+
+
         public IndexTableroViewModel ()
         {
             Id=0;
