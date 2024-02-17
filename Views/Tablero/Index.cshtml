@@ -7,6 +7,7 @@
 <h2>Tableros List</h2>
 <a asp-controller="Tablero" asp-action="CrearTablero" class="btn btn-primary">Crear Nuevo Tablero</a>
 
+<h4>Mis Tableros</h4>
 <table class="table table-light">
     <thead>
         <tr>
@@ -18,7 +19,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var tablero in Model.Tableros)
+        @foreach (var tablero in Model.Tableros.Where(t => t.Id_Usuario_Propietario == Model.usuarioSesion))
         {
             <tr>
                 <td hidden>@tablero.Id</td>
@@ -26,19 +27,37 @@
                 <td>@tablero.Nombre</td>
                 <td>@tablero.Descripcion</td>
                 <td>
-                    @if (tablero.Id_Usuario_Propietario == @Model.usuarioSesion)
-                    {
-                        <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-id="@tablero.Id" class="btn btn-primary">Editar</a>
-                        <form asp-controller="Tablero" asp-action="EliminarTablero" method="post" onsubmit="return confirm('¿Estás seguro que quieres eliminar el tablero?')">
-                            <input type="hidden" name="id" value="@tablero.Id" />
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <p>No tienes permisos para editar/eliminar este tablero.</p>
-                    }
+                    <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-id="@tablero.Id"
+                        class="btn btn-primary">Editar</a>
+                    <form asp-controller="Tablero" asp-action="EliminarTablero" method="post"
+                        onsubmit="return confirm('¿Estás seguro que quieres eliminar el tablero?')">
+                        <input type="hidden" name="id" value="@tablero.Id" />
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
                 </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4>Otros tableros</h4>
+<table class="table table-light">
+    <thead>
+        <tr>
+            <th hidden>ID</th>
+            <th>Propietario</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tablero in Model.Tableros.Where(t => t.Id_Usuario_Propietario != Model.usuarioSesion))
+        {
+            <tr>
+                <td hidden>@tablero.Id</td>
+                <td>@tablero.NombreUsuario</td>
+                <td>@tablero.Nombre</td>
+                <td>@tablero.Descripcion</td>
             </tr>
         }
     </tbody>

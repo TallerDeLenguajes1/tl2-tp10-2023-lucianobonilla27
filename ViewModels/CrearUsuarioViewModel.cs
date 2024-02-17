@@ -25,6 +25,8 @@ namespace tl2_tp10_2023_lucianobonilla27.ViewModels
 
     [DataType(DataType.Password)]
     [Compare("Contrasenia", ErrorMessage = "Las contraseñas no coinciden")]
+    [Required(ErrorMessage = "Este campo es requerido.")]
+
     public string ContraseniaRep { get; set; }
 
     [Required(ErrorMessage = "Este campo es requerido.")]

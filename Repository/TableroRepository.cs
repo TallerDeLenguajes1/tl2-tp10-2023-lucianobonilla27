@@ -3,12 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data.SQLite;
-using tl2_tp09_2023_lucianobonilla27.Repository;
+
 
 
 
 namespace tl2_tp09_2023_lucianobonilla27.Models
 {
+    public interface ITableroRepository
+    {
+        void CrearTablero(Tablero t);
+        void ModificarTablero(int id, Tablero tableroModificado);
+        List<Tablero> ListarTableros();
+        Tablero ObtenerTableroPorId(int id);
+        void EliminarTablero(int id);
+        int ObtenerIdTableroPorUsuario(int idUsuarioPropietario);
+        Tablero ObtenerTableroPorNombre(string nombre);
+        List<Tablero> ListarTablerosConTareasAsignadas(int idUsuario);
+        List<Tablero> ListarTablerosConTareasNoAsignadas();
+        List<Tablero> ListarTableroPorUsuario(int id);
+    }
     public class TableroRepository : ITableroRepository
     {
        readonly string CadenaDeConexion;
@@ -181,6 +194,45 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
             return tablerosConTareasAsignadas;
         }
 
+         public List<Tablero> ListarTablerosConTareasNoAsignadas()
+        {
+            var tablerosConTareasNoAsignadas = new List<Tablero>();
+
+            var query = @"
+                SELECT DISTINCT Tablero.*
+                FROM Tablero
+                JOIN Tarea ON Tablero.Id = Tarea.Id_Tablero
+                WHERE Tarea.Id_Usuario_Asignado IS NULL
+            ";
+
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
+            {
+                connection.Open();
+
+                var command = new SQLiteCommand(query, connection);
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var tablero = new Tablero
+                        {
+                            Id = Convert.ToInt32(reader["Id"]),
+                            IdUsuarioPropietario = Convert.ToInt32(reader["Id_Usuario_Propietario"]),
+                            Nombre = reader["Nombre"].ToString(),
+                            Descripcion = reader["Descripcion"].ToString()
+                        };
+
+                        tablerosConTareasNoAsignadas.Add(tablero);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return tablerosConTareasNoAsignadas;
+        }
+
         public int ObtenerIdTableroPorUsuario(int idUsuarioPropietario)
         {
             var query = "SELECT id FROM Tablero WHERE id_usuario_propietario = @idUsuarioPropietario";
@@ -202,7 +254,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                     return Convert.ToInt32(resultado);
                 }
 
-                // Si no hay resultado, retornamos un valor predeterminado (por ejemplo, -1)
+                // Si no hay resultado, retornamos un valor predeterminado
                 return -1;
             }
         }
@@ -234,12 +286,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 command.Parameters.Add(new SQLiteParameter("@id", id));
                 var reader = command.ExecuteReader();
 
-                // Si no hay tableros, lanzar una excepción
-                // if (!reader.HasRows)
-                // {
-                //     connection.Close();
-                //     throw new Exception("No se encontraron tableros para el usuario");
-                // }
+
 
                 while (reader.Read())
                 {

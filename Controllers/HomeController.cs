@@ -63,8 +63,8 @@ public class HomeController : Controller
     }
     
     public IActionResult CerrarSesion()
-    {
-        return RedirectToRoute(new { controller = "Home", action = "Index" });
-        
-    }
+{
+    HttpContext.Session.Clear(); // Limpiar todas las variables de sesión
+    return RedirectToRoute(new { controller = "Home", action = "Index" });
+}
 }

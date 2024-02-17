@@ -2,7 +2,7 @@
     ViewData["Title"] = "Tarea Page";
 }
 @using tl2_tp10_2023_lucianobonilla27.ViewModels;
-@model List<IndexTareaViewModel>
+@model TareasViewModel;
 
 <h2>Tareas List</h2>
 <a asp-controller="Tarea" asp-action="CrearTarea" class="btn btn-primary">Crear Nueva Tarea</a>
@@ -21,7 +21,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var tarea in Model)
+        @foreach (var tarea in Model.Tareas)
         {
             <tr>
                 <td hidden>@tarea.Id</td>
@@ -32,11 +32,20 @@
                 <td>@tarea.Color</td>
                 <td>@tarea.NombreUsuarioAsignado</td>
                 <td>
-                    <a asp-controller="Tarea" asp-action="EditarTarea" asp-route-id="@tarea.Id" class="btn btn-primary">Editar</a>
-                    <form asp-controller="Tarea" asp-action="EliminarTarea" method="post" onsubmit="return confirm('¿Estás seguro que quieres eliminar la tarea?')">
-                        <input type="hidden" name="id" value="@tarea.Id" />
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                    </form>
+                    @if (Model.TablerosDelUsuarioSesion.Any(tablero => tablero.Id == tarea.IdTablero))
+                    {
+                        <a asp-controller="Tarea" asp-action="EditarTarea" asp-route-id="@tarea.Id"
+                            class="btn btn-primary">Editar</a>
+                        <form asp-controller="Tarea" asp-action="EliminarTarea" method="post"
+                            onsubmit="return confirm('¿Estás seguro que quieres eliminar la tarea?')">
+                            <input type="hidden" name="id" value="@tarea.Id" />
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    }
+                    else{
+                        <a asp-controller="Tarea" asp-action="CambiarEstadoTarea" asp-route-id="@tarea.Id"
+                            class="btn btn-warning">Cambiar Estado</a>
+                    }
                 </td>
             </tr>
         }

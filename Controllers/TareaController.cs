@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using tl2_tp09_2023_lucianobonilla27.Models;
-using tl2_tp09_2023_lucianobonilla27.Repository;
 using tl2_tp10_2023_lucianobonilla27.ViewModels;
 
 namespace tl2_tp10_2023_lucianobonilla27.Controllers
@@ -50,7 +49,14 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
                     var tarvm = new IndexTareaViewModel(tarea, nombreUsuarioAsignado, nombreTablero);
                     tareasvm.Add(tarvm);
                 }
-                return View(tareasvm);
+                var tareasViewModel = new TareasViewModel()
+                {
+                    Tareas = tareasvm,
+                    TablerosDelUsuarioSesion = _repositorioTablero.ListarTableros(),
+                    UsuarioSesion = ObtenerIdUsuarioSesion(),
+                    NivelAcceso = "administrador"
+                };
+                return View(tareasViewModel);
             }
              return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
              
@@ -80,13 +86,14 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
                     tareaVm.Nombre = tarea.Nombre;
                     tareaVm.Usuarios = _repositorioUsuario.ListarUsuarios();
                     tareaVm.Tableros = _repositorioTablero.ListarTableroPorUsuario(ObtenerIdUsuarioSesion());
+                    var tab = _repositorioTablero.ObtenerTableroPorId(tarea.IdTablero);
+                    tareaVm.NombreTablero = tab.Nombre;
                     if (tarea.IdUsuarioAsignado != null)
                     {
                         var usu = _repositorioUsuario.ObtenerUsuarioPorId(tarea.IdUsuarioAsignado);
                         tareaVm.NombreUsuarioAsignado = usu.NombreDeUsuario;
                     }
-                    var tab = _repositorioTablero.ObtenerTableroPorId(tarea.IdTablero);
-                    tareaVm.NombreTablero = tab.Nombre;
+                    
                     return View(tareaVm);
                 }
                 return RedirectToAction("Index", "Home");
@@ -207,6 +214,47 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
 
             }
 
+            [HttpGet]
+            [Route("CambiarEstadoTarea")]
+
+            public IActionResult CambiarEstadoTarea(int id)
+            {
+                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
+                {
+
+                    var tarea = _repositorioTarea.ObtenerTareaPorId(id);
+                    var cambiarEstadoVm = new CambiarEstadoTareaViewModel(){
+                        Id = tarea.Id,
+                        EstadoT = tarea.EstadoT
+                    };
+                    
+                    return View(cambiarEstadoVm);
+                }
+                return RedirectToAction("Index", "Home");
+                
+            }
+
+              [HttpPost]
+            [Route("CambiarEstadoTarea")]
+            public IActionResult CambiarEstadoTarea(CambiarEstadoTareaViewModel tareaVm)
+            {
+                if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
+                {
+                    try
+                    {
+                       _repositorioTarea.ModificarEstadoTarea(tareaVm.Id,tareaVm.EstadoT);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogError(e.ToString());
+                    }
+
+                    return RedirectToAction("Index");
+                }
+
+                return RedirectToAction("Index", "Home");
+            }
+
            
 
             // private List<IndexTareaViewModel> ListarTareasIndex(){
@@ -240,7 +288,7 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             //     return listaTareasIndex;
             // }
 
-            private List<IndexTareaViewModel> ListarTareasIndex()
+            private TareasViewModel ListarTareasIndex()
             {
                 var listaTareasIndex = new List<IndexTareaViewModel>();
 
@@ -250,6 +298,9 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
                 // Obtener las tareas asignadas al usuario de sesión
                 var tareasAsignadas = _repositorioTarea.ListarPorUsuario(idUsuarioSesion);
 
+                // Obtener las tareas no asignadas (con IdUsuarioAsignado igual a null)
+                var tareasNoAsignadas = _repositorioTarea.ListarTareasNoAsignadas();
+
                 // Obtener los tableros del usuario de sesión
                 var tablerosUsuario = _repositorioTablero.ListarTableroPorUsuario(idUsuarioSesion);
 
@@ -257,7 +308,8 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
                 var tareasPropias = _repositorioTarea.ListarTareasPorTableros(tablerosUsuario.Select(t => t.Id).ToList());
 
                 // Combinar y eliminar duplicados
-                var todasLasTareas = tareasAsignadas.Union(tareasPropias).Distinct().ToList();
+                var todasLasTareas = tareasAsignadas.Union(tareasPropias).Union(tareasNoAsignadas).GroupBy(t => t.Id).Select(group => group.First()).ToList();
+
 
                 foreach (var tarea in todasLasTareas)
                 {
@@ -271,9 +323,17 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
                     var tarvm = new IndexTareaViewModel(tarea, nombreUsuarioAsignado, nombreTablero);
                     listaTareasIndex.Add(tarvm);
                 }
+                var tareasViewModel = new TareasViewModel()
+                {
+                    Tareas = listaTareasIndex,
+                    TablerosDelUsuarioSesion = tablerosUsuario,
+                    UsuarioSesion = ObtenerIdUsuarioSesion(),
+                    NivelAcceso = "operador"
+                };
 
-                return listaTareasIndex;
+                return tareasViewModel;
             }
+
 
 
             // Método para obtener el id del usuario de sesión

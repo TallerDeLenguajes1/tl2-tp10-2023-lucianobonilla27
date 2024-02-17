@@ -1,5 +1,4 @@
 using tl2_tp09_2023_lucianobonilla27.Models;
-using tl2_tp09_2023_lucianobonilla27.Repository;
 using tl2_tp10_2023_lucianobonilla27.Repository;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.

@@ -3,12 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data.SQLite;
-using tl2_tp09_2023_lucianobonilla27.Repository;
+
 
 
 
 namespace tl2_tp09_2023_lucianobonilla27.Models
 {
+    public interface ITareaRepository
+    {
+        Tarea CrearTareaEnTablero(int idTablero,Tarea t);
+        void ModificarEstadoTarea(int id,Tarea.Estado estadoNuevo);
+        void ModificarTarea(int id, Tarea t);
+        void ModificarNombreTarea(int id, string nombreNuevo);
+        Tarea ObtenerTareaPorId(int id);
+        List<Tarea> ListarPorUsuario(int idUsuario);
+        List<Tarea> ListarTareasPorTableros(List<int> idsTableros);
+        List<Tarea> ListarTareasNoAsignadas();
+        List<Tarea> ListarTareas();
+        void EliminarTarea(int id);
+        void AsignarTareaAUsuario(int idTarea,int idUsuario);
+
+        List<Tarea> ListarPorTablero(int id);
+    }
     public class TareaRepository : ITareaRepository
     {
        readonly string CadenaDeConexion;
@@ -127,7 +143,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
             }
         }
 
-         public void ModificarEstadoTarea(int id, int estadoNuevo)
+         public void ModificarEstadoTarea(int id, Tarea.Estado estadoNuevo)
         {
             var query = @"UPDATE Tarea SET estado = @estado WHERE id=@id";
             using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
@@ -135,7 +151,7 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
 
-                command.Parameters.Add(new SQLiteParameter("@estado", estadoNuevo));
+                command.Parameters.Add(new SQLiteParameter("@estado", (int)estadoNuevo));
                 command.Parameters.Add(new SQLiteParameter("@id", id));
 
                 command.ExecuteNonQuery();
@@ -231,6 +247,41 @@ namespace tl2_tp09_2023_lucianobonilla27.Models
                 connection.Open();
                 var command = new SQLiteCommand(query, connection);
                 command.Parameters.Add(new SQLiteParameter("@idTablero", id));
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var tarea = new Tarea
+                    {
+                        Id = Convert.ToInt32(reader["Id"]),
+                        IdTablero = Convert.ToInt32(reader["Id_Tablero"]),
+                        Nombre = reader["Nombre"].ToString(),
+                        EstadoT = Enum.Parse<Tarea.Estado>(reader["Estado"].ToString()),
+                        Descripcion = reader["Descripcion"].ToString(),
+                        Color = reader["Color"].ToString(),
+                    };
+
+                    // Verificar si Id_Usuario_Asignado es DBNull antes de la conversión
+                    object idUsuarioAsignado = reader["Id_Usuario_Asignado"];
+                    tarea.IdUsuarioAsignado = idUsuarioAsignado != DBNull.Value ? Convert.ToInt32(idUsuarioAsignado) : (int?)null;
+
+                    tareas.Add(tarea);
+                }
+
+                connection.Close();
+            }
+
+            return tareas;
+        }
+
+        public List<Tarea> ListarTareasNoAsignadas()
+        {
+            var tareas = new List<Tarea>();
+            var query = "SELECT * FROM Tarea WHERE id_usuario_asignado IS NULL";
+            using (SQLiteConnection connection = new SQLiteConnection(CadenaDeConexion))
+            {
+                connection.Open();
+                var command = new SQLiteCommand(query, connection);
                 var reader = command.ExecuteReader();
 
                 while (reader.Read())

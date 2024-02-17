@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using tl2_tp09_2023_lucianobonilla27.Models;
-using tl2_tp09_2023_lucianobonilla27.Repository;
 using tl2_tp10_2023_lucianobonilla27.ViewModels;
 
 namespace tl2_tp10_2023_lucianobonilla27.Controllers
@@ -211,7 +210,7 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             return ListaTablerosViewModel;
         }
 
-        // 
+        
         private List<IndexTableroViewModel> ListarTableroPorUsuarioViewModel(int idUsuario)
         {
             var listaTablerosViewModel = new List<IndexTableroViewModel>();
@@ -222,8 +221,16 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             // Obtener los tableros en los que el usuario tiene alguna tarea asignada
             var tablerosConTareasAsignadas = _repositorioTablero.ListarTablerosConTareasAsignadas(idUsuario);
 
-            // Combinar ambas listas y eliminar duplicados
-            var tablerosUnicos = tablerosPropios.Concat(tablerosConTareasAsignadas).Distinct().ToList();
+            // Obtener los tableros con tareas no asignadas (con tareas donde IdUsuarioAsignado es null)
+            var tablerosConTareasNoAsignadas = _repositorioTablero.ListarTablerosConTareasNoAsignadas();
+
+            // Combinar ambas listas y eliminar duplicados usando GroupBy
+            var tablerosUnicos = tablerosPropios
+                .Concat(tablerosConTareasAsignadas)
+                .Concat(tablerosConTareasNoAsignadas)
+                .GroupBy(tablero => tablero.Id)
+                .Select(group => group.First())
+                .ToList();
 
             foreach (var tablero in tablerosUnicos)
             {

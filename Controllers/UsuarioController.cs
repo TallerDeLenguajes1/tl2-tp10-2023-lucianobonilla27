@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using tl2_tp09_2023_lucianobonilla27.Models;
-using tl2_tp09_2023_lucianobonilla27.Repository;
 using tl2_tp10_2023_lucianobonilla27.ViewModels;
 
 namespace tl2_tp10_2023_lucianobonilla27.Controllers
@@ -68,6 +67,11 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         [Route("CrearUsuario")]
         public IActionResult CrearUsuario(CrearUsuarioViewModel u)
         {
+            if (NoEstaLogeado() || ObtenerRolUsuario() != "administrador")
+            {
+                _logger.LogError("Intento no autorizado de acceder a la creación de usuario por un usuario.");
+                return RedirectToAction("Index");
+            }
             if(!ModelState.IsValid) return RedirectToAction("Index");
             try
             {
@@ -112,6 +116,12 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         [Route("EditarUsuario")]
         public IActionResult EditarUsuario(EditarUsuarioViewModel usuario)
         {   
+            if (NoEstaLogeado() || ObtenerRolUsuario() != "administrador")
+            {
+                // Logear el intento no autorizado de acceder a la página de edición de usuario
+                _logger.LogError("Intento no autorizado de acceder a la edición de usuario.");
+                return RedirectToAction("Index");
+            }
             if(!ModelState.IsValid) return RedirectToAction("Index");
             try
             {

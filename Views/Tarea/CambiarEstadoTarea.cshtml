@@ -1,0 +1,26 @@
+@using tl2_tp09_2023_lucianobonilla27.Models;
+@using tl2_tp10_2023_lucianobonilla27.ViewModels;
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+@model CambiarEstadoTareaViewModel;
+
+<form asp-controller="Tarea" asp-action="CambiarEstadoTarea" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="EstadoT">Estado: </label>
+        <select asp-for="EstadoT" class="form-control">
+            <option value="">Seleccione un estado</option>
+            @foreach (var estado in Enum.GetValues(typeof(Tarea.Estado)))
+            {
+                <option value="@estado">@estado</option>
+            }
+        </select>
+        <span asp-validation-for="@Model.EstadoT" class="text-danger"></span>
+
+    </div>
+
+
+    <button class="btn btn-primary" type="submit">Cambiar Estado</button>
+</form>
