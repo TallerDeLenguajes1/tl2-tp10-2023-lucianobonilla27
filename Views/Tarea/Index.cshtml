@@ -146,19 +146,20 @@
     </thead>
 
     <tbody>
-        @foreach (var tarea in Model.Tareas.Where(t => (Model.NivelAcceso == "administrador" && t.IdUsuarioAsignado !=
-        @Model.UsuarioSesion) || t.IdUsuarioAsignado == null))
-        {
+        @foreach (var t in Model.Tareas.Where(t =>
+    (Model.NivelAcceso == "administrador" || t.IdUsuarioAsignado == null) &&
+    !Model.TablerosDelUsuarioSesion.Any(tablero => tablero.Id == t.IdTablero) &&
+    t.IdUsuarioAsignado != @Model.UsuarioSesion))
+{
             <tr>
-                <td hidden>@tarea.Id</td>
-                <td>@tarea.NombreTablero</td>
-                <td>@tarea.Nombre</td>
-                <td>@tarea.EstadoT</td>
-                <td>@tarea.Descripcion</td>
-                <td>@tarea.Color</td>
-                <td>@tarea.NombreUsuarioAsignado</td>
+                <td hidden>@t.Id</td>
+                <td>@t.NombreTablero</td>
+                <td>@t.Nombre</td>
+                <td>@t.EstadoT</td>
+                <td>@t.Descripcion</td>
+                <td>@t.Color</td>
+                <td>@t.NombreUsuarioAsignado</td>
                 <td>
-
                     <span>Solo vista</span>
                 </td>
             </tr>
