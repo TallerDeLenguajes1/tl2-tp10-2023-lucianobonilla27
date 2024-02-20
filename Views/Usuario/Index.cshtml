@@ -6,6 +6,44 @@
 @using tl2_tp10_2023_lucianobonilla27.ViewModels;
 @model UsuarioViewModel
 
+<style>
+    body {
+        background-color: #ECF0F1;
+        color: #2C3E50;
+    }
+
+    h2,
+    h4 {
+        color: #3498DB;
+    }
+
+    .table-light th,
+    .table-light td {
+        background-color: #ECF0F1;
+    }
+
+    .btn-primary {
+        background-color: #3498DB;
+        border-color: #3498DB;
+    }
+
+    .btn-danger {
+        background-color: #E74C3C;
+        border-color: #E74C3C;
+    }
+
+    .btn-warning {
+        background-color: #F39C12;
+        border-color: #F39C12;
+    }
+
+    .btn-primary:hover,
+    .btn-danger:hover,
+    .btn-warning:hover {
+        filter: brightness(90%);
+    }
+</style>
+
 <h2>Usuarios List</h2>
 
 @if (Model.RolUsuario == "administrador")
@@ -21,7 +59,7 @@
             <th>Rol</th>
             @if (Model.RolUsuario == "administrador")
             {
-            <th>Acciones</th>
+                <th>Acciones</th>
             }
         </tr>
     </thead>
@@ -32,7 +70,7 @@
                 <td hidden>@usuario.Id</td>
                 <td>@usuario.NombreDeUsuario</td>
                 <td>@usuario.RolUsuario</td>
-               @if (Model.RolUsuario == "administrador")
+                @if (Model.RolUsuario == "administrador")
                 {
                     <td>
                         <a asp-controller="Usuario" asp-action="EditarUsuario" asp-route-id="@usuario.Id" class="btn btn-primary">Editar</a>

@@ -3,6 +3,36 @@
 @section Scripts{<partial name="_ValidationScriptsPartial"/>}
 @model CrearUsuarioViewModel;
 
+<style>
+    /* Estilos personalizados para la paleta de colores neutra */
+    body {
+        background-color: #ECF0F1;
+        color: #2C3E50;
+    }
+
+    h2, h4 {
+        color: #3498DB;
+    }
+
+    .form-label, .form-control, .form-select, .btn-primary {
+        background-color: #ECF0F1;
+        border-color: #3498DB;
+        color: #2C3E50;
+    }
+
+    .form-control, .form-select {
+        margin-bottom: 15px;
+    }
+
+    .btn-primary:hover {
+        filter: brightness(90%);
+    }
+
+    .text-danger {
+        color: #E74C3C;
+    }
+</style>
+
 <form asp-controller="Usuario" asp-action="CrearUsuario" method="post">
   <div class="mb-3">
     <label for="lbl.nombre" class="form-label" asp-for="NombreDeUsuario">Nombre de Usuario: </label>

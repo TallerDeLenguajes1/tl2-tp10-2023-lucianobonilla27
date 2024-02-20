@@ -3,6 +3,36 @@
 @section Scripts{<partial name="_ValidationScriptsPartial"/>}
 @model EditarUsuarioViewModel;
 
+<style>
+    /* Estilos personalizados para la paleta de colores neutra */
+    body {
+        background-color: #ECF0F1;
+        color: #2C3E50;
+    }
+
+    h2, h4 {
+        color: #3498DB;
+    }
+
+    .form-label, .form-control, .form-select, .btn-primary {
+        background-color: #ECF0F1;
+        border-color: #3498DB;
+        color: #2C3E50;
+    }
+
+    .form-control, .form-select {
+        margin-bottom: 15px;
+    }
+
+    .btn-primary:hover {
+        filter: brightness(90%);
+    }
+
+    .text-danger {
+        color: #E74C3C;
+    }
+</style>
+
 <form asp-controller="Usuario" asp-action="EditarUsuario" method="post">
     <input type="hidden" asp-for="Id" />
 
@@ -22,18 +52,16 @@
         </select>
     </div>
 
-
     <div class="mb-3">
         <label class="form-label" asp-for="Contrasenia">Contraseña: </label>
         <input asp-for="Contrasenia" class="form-control" />
         <p>Si este campo queda en blanco se sigue usando la Contraseña anterior</p>
     </div>
+
     <div class="mb-3">
         <label class="form-label" asp-for="ContraseniaRep">Repita la contraseña: </label>
         <input asp-for="ContraseniaRep" class="form-control" />
         <span asp-validation-for="@Model.ContraseniaRep" class="text-danger"></span>
-
-        
     </div>
 
     <button class="btn btn-primary" type="submit">Guardar Cambios</button>
