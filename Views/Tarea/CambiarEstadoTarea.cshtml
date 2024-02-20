@@ -3,7 +3,38 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
 @model CambiarEstadoTareaViewModel;
+
+<style>
+    /* Estilos personalizados para la paleta de colores neutra */
+    body {
+        background-color: #ECF0F1;
+        color: #2C3E50;
+    }
+
+    h2, h4 {
+        color: #3498DB;
+    }
+
+    .form-label, .form-control, .btn-primary {
+        background-color: #ECF0F1;
+        border-color: #3498DB;
+        color: #2C3E50;
+    }
+
+    .form-control {
+        margin-bottom: 15px;
+    }
+
+    .btn-primary:hover {
+        filter: brightness(90%);
+    }
+
+    .text-danger {
+        color: #E74C3C;
+    }
+</style>
 
 <form asp-controller="Tarea" asp-action="CambiarEstadoTarea" method="post">
     <input type="hidden" asp-for="Id" />
@@ -18,9 +49,7 @@
             }
         </select>
         <span asp-validation-for="@Model.EstadoT" class="text-danger"></span>
-
     </div>
-
 
     <button class="btn btn-primary" type="submit">Cambiar Estado</button>
 </form>

@@ -47,7 +47,7 @@ public class HomeController : Controller
         catch (Exception e)
         {
              _logger.LogError(e.ToString());
-            _logger.LogWarning("Usuario invalido - Nombre de usuario: " + usuario.Nombre + "/Contraseña: " + usuario.Contrasenia);
+            _logger.LogWarning("Usuario invalido - Nombre de usuario:" + usuario.Nombre + "/Contraseña:" + usuario.Contrasenia);
         }
         // si el usuario no existe devuelvo al index
             return RedirectToAction("Index");

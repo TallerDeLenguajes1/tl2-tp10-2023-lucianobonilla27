@@ -4,10 +4,52 @@
 @using tl2_tp10_2023_lucianobonilla27.ViewModels;
 @model TareasViewModel;
 
+<style>
+    body {
+        background-color: #ECF0F1;
+        color: #2C3E50;
+    }
+
+    h2,
+    h4 {
+        color: #3498DB;
+    }
+
+    .table-light th,
+    .table-light td {
+        background-color: #ECF0F1;
+    }
+
+    .btn-primary {
+        background-color: #3498DB;
+        border-color: #3498DB;
+    }
+
+    .btn-danger {
+        background-color: #E74C3C;
+        border-color: #E74C3C;
+    }
+
+    .btn-warning {
+        background-color: #F39C12;
+        border-color: #F39C12;
+    }
+
+    .btn-primary:hover,
+    .btn-danger:hover,
+    .btn-warning:hover {
+        filter: brightness(90%);
+    }
+</style>
+
 <h2>Tareas List</h2>
+
 <a asp-controller="Tarea" asp-action="CrearTarea" class="btn btn-primary">Crear Nueva Tarea</a>
 
+<!-- Tabla para tareas propias -->
+<h4>Tareas Propias</h4>
 <table class="table table-light">
+
     <thead>
         <tr>
             <th hidden>ID</th>
@@ -20,8 +62,10 @@
             <th>Acciones</th>
         </tr>
     </thead>
+
     <tbody>
-        @foreach (var tarea in Model.Tareas)
+        @foreach (var tarea in Model.Tareas.Where(t => Model.TablerosDelUsuarioSesion.Any(tablero => tablero.Id ==
+        t.IdTablero)))
         {
             <tr>
                 <td hidden>@tarea.Id</td>
@@ -32,20 +76,90 @@
                 <td>@tarea.Color</td>
                 <td>@tarea.NombreUsuarioAsignado</td>
                 <td>
-                    @if (Model.TablerosDelUsuarioSesion.Any(tablero => tablero.Id == tarea.IdTablero))
-                    {
-                        <a asp-controller="Tarea" asp-action="EditarTarea" asp-route-id="@tarea.Id"
-                            class="btn btn-primary">Editar</a>
-                        <form asp-controller="Tarea" asp-action="EliminarTarea" method="post"
-                            onsubmit="return confirm('¿Estás seguro que quieres eliminar la tarea?')">
-                            <input type="hidden" name="id" value="@tarea.Id" />
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                        </form>
-                    }
-                    else{
-                        <a asp-controller="Tarea" asp-action="CambiarEstadoTarea" asp-route-id="@tarea.Id"
-                            class="btn btn-warning">Cambiar Estado</a>
-                    }
+                    <!-- Acciones para tareas propias -->
+                    <a asp-controller="Tarea" asp-action="EditarTarea" asp-route-id="@tarea.Id"
+                        class="btn btn-primary">Editar</a>
+                    <form asp-controller="Tarea" asp-action="EliminarTarea" method="post"
+                        onsubmit="return confirm('¿Estás seguro que quieres eliminar la tarea?')">
+                        <input type="hidden" name="id" value="@tarea.Id" />
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Tabla para tareas asignadas -->
+<h4>Tareas Asignadas</h4>
+<table class="table table-light">
+
+    <thead>
+        <tr>
+            <th hidden>ID</th>
+            <th>Tablero</th>
+            <th>Nombre</th>
+            <th>Estado</th>
+            <th>Descripción</th>
+            <th>Color</th>
+            <th>Usuario Asignado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var tarea in Model.Tareas.Where(t => t.IdUsuarioAsignado == @Model.UsuarioSesion))
+        {
+            <tr>
+                <td hidden>@tarea.Id</td>
+                <td>@tarea.NombreTablero</td>
+                <td>@tarea.Nombre</td>
+                <td>@tarea.EstadoT</td>
+                <td>@tarea.Descripcion</td>
+                <td>@tarea.Color</td>
+                <td>@tarea.NombreUsuarioAsignado</td>
+                <td>
+
+                    <a asp-controller="Tarea" asp-action="CambiarEstadoTarea" asp-route-id="@tarea.Id"
+                        class="btn btn-primary">Cambiar Estado</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Tabla solo vista de tareas -->
+<h4>Solo Vista de Tareas</h4>
+<table class="table table-light">
+
+    <thead>
+        <tr>
+            <th hidden>ID</th>
+            <th>Tablero</th>
+            <th>Nombre</th>
+            <th>Estado</th>
+            <th>Descripción</th>
+            <th>Color</th>
+            <th>Usuario Asignado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var tarea in Model.Tareas.Where(t => (Model.NivelAcceso == "administrador" && t.IdUsuarioAsignado !=
+        @Model.UsuarioSesion) || t.IdUsuarioAsignado == null))
+        {
+            <tr>
+                <td hidden>@tarea.Id</td>
+                <td>@tarea.NombreTablero</td>
+                <td>@tarea.Nombre</td>
+                <td>@tarea.EstadoT</td>
+                <td>@tarea.Descripcion</td>
+                <td>@tarea.Color</td>
+                <td>@tarea.NombreUsuarioAsignado</td>
+                <td>
+
+                    <span>Solo vista</span>
                 </td>
             </tr>
         }

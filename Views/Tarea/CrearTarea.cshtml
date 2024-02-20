@@ -3,6 +3,36 @@
 @section Scripts{<partial name="_ValidationScriptsPartial"/>}
 @model CrearTareaViewModel;
 
+<style>
+    /* Estilos personalizados para la paleta de colores neutra */
+    body {
+        background-color: #ECF0F1;
+        color: #2C3E50;
+    }
+
+    h2, h4 {
+        color: #3498DB;
+    }
+
+    .form-label, .form-control, .form-select, .btn-primary {
+        background-color: #ECF0F1;
+        border-color: #3498DB;
+        color: #2C3E50;
+    }
+
+    .form-control, .form-select {
+        margin-bottom: 15px;
+    }
+
+    .btn-primary:hover {
+        filter: brightness(90%);
+    }
+
+    .text-danger {
+        color: #E74C3C;
+    }
+</style>
+
 <form asp-controller="Tarea" asp-action="CrearTarea" method="post">
     <input type="hidden" asp-for="Id" />
 
@@ -18,7 +48,6 @@
         <p>Si no figuran tableros primero debe crear uno</p>
         <span asp-validation-for="@Model.NombreTablero" class="text-danger"></span>
     </div>
-
 
     <div class="mb-3">
         <label class="form-label" asp-for="Nombre">Nombre Tarea: </label>
@@ -41,7 +70,6 @@
         <label class="form-label" asp-for="Descripcion">Descripción: </label>
         <input asp-for="Descripcion" class="form-control" />
         <span asp-validation-for="@Model.Descripcion" class="text-danger"></span>
-
     </div>
 
     <div class="mb-3">
@@ -52,11 +80,11 @@
    <div class="mb-3">
     <label asp-for="@Model.IdUsuarioAsignado">Usuario Asignado</label>
     <select class="form-select" asp-for="@Model.IdUsuarioAsignado" aria-label="Default select example">
-    <option value=@null></option>
-    @foreach(var item in Model.Usuarios)
-    {
-        <option value="@item.Id">@item.NombreDeUsuario</option>
-    }
+        <option value=@null></option>
+        @foreach(var item in Model.Usuarios)
+        {
+            <option value="@item.Id">@item.NombreDeUsuario</option>
+        }
     </select>
    </div>
 

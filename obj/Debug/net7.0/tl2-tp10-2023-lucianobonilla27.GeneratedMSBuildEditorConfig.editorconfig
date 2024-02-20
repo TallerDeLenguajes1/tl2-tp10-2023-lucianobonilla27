@@ -9,77 +9,77 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = tl2_tp10_2023_lucianobonilla27
 build_property.RootNamespace = tl2_tp10_2023_lucianobonilla27
-build_property.ProjectDir = c:\Users\Luciano\Desktop\TLII\tl2-tp10-2023-lucianobonilla27\
+build_property.ProjectDir = C:\Users\Luciano\Desktop\TLII\tl2-tp10-2023-lucianobonilla27\
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = c:\Users\Luciano\Desktop\TLII\tl2-tp10-2023-lucianobonilla27
+build_property.MSBuildProjectDirectory = C:\Users\Luciano\Desktop\TLII\tl2-tp10-2023-lucianobonilla27
 build_property._RazorSourceGeneratorDebug = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Home/Index.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Home/Privacy.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Shared/Error.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tablero/CrearTablero.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tablero/CrearTablero.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFibGVyb1xDcmVhclRhYmxlcm8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tablero/EditarTablero.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tablero/EditarTablero.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFibGVyb1xFZGl0YXJUYWJsZXJvLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tablero/Index.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tablero/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFibGVyb1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tarea/CambiarEstadoTarea.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tarea/CambiarEstadoTarea.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFyZWFcQ2FtYmlhckVzdGFkb1RhcmVhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tarea/CrearTarea.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tarea/CrearTarea.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFyZWFcQ3JlYXJUYXJlYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tarea/EditarTarea.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tarea/EditarTarea.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFyZWFcRWRpdGFyVGFyZWEuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tarea/Index.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Tarea/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFyZWFcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Usuario/CrearUsuario.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Usuario/CrearUsuario.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xDcmVhclVzdWFyaW8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Usuario/EditarUsuario.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Usuario/EditarUsuario.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xFZGl0YXJVc3VhcmlvLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Usuario/Index.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Usuario/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/_ViewImports.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/_ViewStart.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Shared/_Layout.cshtml]
+[C:/Users/Luciano/Desktop/TLII/tl2-tp10-2023-lucianobonilla27/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-7gdx3auwq7

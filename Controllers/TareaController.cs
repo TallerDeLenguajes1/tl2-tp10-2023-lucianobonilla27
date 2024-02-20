@@ -52,8 +52,8 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
                 var tareasViewModel = new TareasViewModel()
                 {
                     Tareas = tareasvm,
-                    TablerosDelUsuarioSesion = _repositorioTablero.ListarTableros(),
                     UsuarioSesion = ObtenerIdUsuarioSesion(),
+                    TablerosDelUsuarioSesion = _repositorioTablero.ListarTableroPorUsuario(ObtenerIdUsuarioSesion()),
                     NivelAcceso = "administrador"
                 };
                 return View(tareasViewModel);
@@ -256,37 +256,6 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             }
 
            
-
-            // private List<IndexTareaViewModel> ListarTareasIndex(){
-            //     var listaTareasIndex = new List<IndexTareaViewModel>();
-            //     var listaTareas = _repositorioTarea.ListarTareas();
-            //     foreach (var item in listaTareas)
-            //     {
-            //         Tablero? tab = _repositorioTablero.ObtenerTableroPorId(item.IdTablero);
-            //         Usuario? usu = _repositorioUsuario.ObtenerUsuarioPorId(item.IdUsuarioAsignado);
-            //         string? nombreUsuario;
-            //         string? nombreTablero;
-            //         if (usu != null)
-            //         {
-            //             nombreUsuario = usu.NombreDeUsuario;
-            //         }
-            //         else
-            //         {
-            //             nombreUsuario = null;
-            //         }
-            //         if (tab != null)
-            //         {
-            //             nombreTablero = tab.Nombre;
-            //         }
-            //         else
-            //         {
-            //             nombreTablero = null;
-            //         }
-            //         var tarvm = new IndexTareaViewModel(item, nombreUsuario, nombreTablero);
-            //         listaTareasIndex.Add(tarvm);
-            //     }
-            //     return listaTareasIndex;
-            // }
 
             private TareasViewModel ListarTareasIndex()
             {
