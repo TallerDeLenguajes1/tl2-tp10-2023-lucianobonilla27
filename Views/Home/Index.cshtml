@@ -2,8 +2,47 @@
     ViewData["Title"] = "Home Page";
 }
 
+@model MVC.ViewModels.LoginViewModel;
 
-@model MVC.ViewModels.LoginViewModel
+<style>
+    /* Estilos personalizados para la paleta de colores neutra */
+    body {
+        background-color: #ECF0F1;
+        color: #2C3E50;
+    }
+
+    h1 {
+        color: #3498DB;
+    }
+
+    .btn-primary {
+        background-color: #3498DB;
+        border-color: #3498DB;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        filter: brightness(90%);
+    }
+
+    .mb-3 {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        color: #3498DB;
+    }
+
+    .form-control {
+        background-color: #ECF0F1;
+        border-color: #3498DB;
+        color: #2C3E50;
+    }
+
+    .text-danger {
+        color: #E74C3C;
+    }
+</style>
 
 <h1>Bienvenido</h1>
 
@@ -19,8 +58,9 @@
         <input asp-for="@Model.Contrasenia" type="password" class="form-control" />
         <span asp-validation-for="@Model.Contrasenia" class="text-danger"></span>
     </div>
+
     <div class="mb-3">
-    <button type="submit" class="btn btn-primary">Enviar</button>
+        <button type="submit" class="btn btn-primary">Enviar</button>
     </div>
 </form>
 
