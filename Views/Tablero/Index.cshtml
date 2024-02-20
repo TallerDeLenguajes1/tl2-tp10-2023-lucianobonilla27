@@ -4,9 +4,48 @@
 @using tl2_tp10_2023_lucianobonilla27.ViewModels;
 @model TablerosViewModel;
 
+<style>
+    body {
+        background-color: #ECF0F1;
+        color: #2C3E50;
+    }
+
+    h2,
+    h4 {
+        color: #3498DB;
+    }
+
+    .table-light th,
+    .table-light td {
+        background-color: #ECF0F1;
+    }
+
+    .btn-primary {
+        background-color: #3498DB;
+        border-color: #3498DB;
+    }
+
+    .btn-danger {
+        background-color: #E74C3C;
+        border-color: #E74C3C;
+    }
+
+    .btn-warning {
+        background-color: #F39C12;
+        border-color: #F39C12;
+    }
+
+    .btn-primary:hover,
+    .btn-danger:hover,
+    .btn-warning:hover {
+        filter: brightness(90%);
+    }
+</style>
+
 <h2>Tableros List</h2>
 <a asp-controller="Tablero" asp-action="CrearTablero" class="btn btn-primary">Crear Nuevo Tablero</a>
 
+<!-- Mis Tableros -->
 <h4>Mis Tableros</h4>
 <table class="table table-light">
     <thead>
@@ -27,10 +66,8 @@
                 <td>@tablero.Nombre</td>
                 <td>@tablero.Descripcion</td>
                 <td>
-                    <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-id="@tablero.Id"
-                        class="btn btn-primary">Editar</a>
-                    <form asp-controller="Tablero" asp-action="EliminarTablero" method="post"
-                        onsubmit="return confirm('¿Estás seguro que quieres eliminar el tablero?')">
+                    <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-id="@tablero.Id" class="btn btn-primary">Editar</a>
+                    <form asp-controller="Tablero" asp-action="EliminarTablero" method="post" onsubmit="return confirm('¿Estás seguro que quieres eliminar el tablero?')">
                         <input type="hidden" name="id" value="@tablero.Id" />
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                     </form>
@@ -40,6 +77,7 @@
     </tbody>
 </table>
 
+<!-- Otros Tableros -->
 <h4>Otros tableros</h4>
 <table class="table table-light">
     <thead>

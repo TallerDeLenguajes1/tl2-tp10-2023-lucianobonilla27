@@ -1,6 +1,40 @@
 @using tl2_tp10_2023_lucianobonilla27.ViewModels;
-@section Scripts{<partial name="_ValidationScriptsPartial"/>}
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
 @model EditarTableroViewModel;
+
+<style>
+    /* Estilos personalizados para la paleta de colores neutra */
+    body {
+        background-color: #ECF0F1;
+        color: #2C3E50;
+    }
+
+    h2, h4 {
+        color: #3498DB;
+    }
+
+    .form-label, .form-control, .btn-primary {
+        background-color: #ECF0F1;
+        border-color: #3498DB;
+        color: #2C3E50;
+    }
+
+    .form-control {
+        margin-bottom: 15px;
+    }
+
+    .btn-primary:hover {
+        filter: brightness(90%);
+    }
+
+    .text-danger {
+        color: #E74C3C;
+    }
+</style>
+
 <form asp-controller="Tablero" asp-action="EditarTablero" method="post">
     <input type="hidden" asp-for="Id" />
     <input type="hidden" asp-for="Id_Usuario_Propietario">
@@ -9,15 +43,12 @@
         <label class="form-label" asp-for="Nombre">Nombre: </label>
         <input asp-for="Nombre" class="form-control" />
         <span asp-validation-for="@Model.Nombre" class="text-danger"></span>
-
     </div>
-
 
     <div class="mb-3">
         <label class="form-label" asp-for="Descripcion">Descripción: </label>
         <input asp-for="Descripcion" class="form-control" />
     </div>
-
 
     <button class="btn btn-primary" type="submit">Guardar Cambios</button>
 </form>
