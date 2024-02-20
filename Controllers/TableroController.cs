@@ -21,15 +21,15 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         private readonly ILogger<TableroController> _logger;
 
 
-        public TableroController(ILogger<TableroController> logger, ITableroRepository repositorioTablero, IUsuarioRepository repositorioUsuario,ITareaRepository reposirotioTarea)
+        public TableroController(ILogger<TableroController> logger, ITableroRepository repositorioTablero, IUsuarioRepository repositorioUsuario, ITareaRepository reposirotioTarea)
         {
-            _repositorioTablero=repositorioTablero;
-            _repositorioUsuario=repositorioUsuario;
+            _repositorioTablero = repositorioTablero;
+            _repositorioUsuario = repositorioUsuario;
             _repositorioTarea = reposirotioTarea;
             _logger = logger;
         }
 
-       [Route("Index")]
+        [Route("Index")]
         public IActionResult Index()
         {
             if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
@@ -69,34 +69,45 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
 
         [HttpGet]
         [Route("EditarTablero")]
-        
+
         public IActionResult EditarTablero(int id)
         {
-            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
+            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
+            {
+                try
+                {
+                    var tablero = _repositorioTablero.ObtenerTableroPorId(id);
+                    var tablerovm = new EditarTableroViewModel(tablero);
+                    return View(tablerovm);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.ToString());
+                    return BadRequest();
+                }
 
-                var tablero = _repositorioTablero.ObtenerTableroPorId(id);
-                var tablerovm = new EditarTableroViewModel(tablero);
-                return View(tablerovm);
-            }    
+
+            }
             return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
 
         }
 
         [HttpPost]
-        [Route("EditarTablero")] 
+        [Route("EditarTablero")]
         public IActionResult EditarTablero(EditarTableroViewModel tablero)
         {
-            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
+            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
+            {
                 try
                 {
                     var tableroMod = _repositorioTablero.ObtenerTableroPorId(tablero.Id);
-            
-                      tableroMod.IdUsuarioPropietario = tablero.Id_Usuario_Propietario;  
-                    
+
+                    tableroMod.IdUsuarioPropietario = tablero.Id_Usuario_Propietario;
+
                     tableroMod.Nombre = tablero.Nombre;
                     tableroMod.Descripcion = tablero.Descripcion;
-                    _repositorioTablero.ModificarTablero(tablero.Id,tableroMod);                    
-                    }
+                    _repositorioTablero.ModificarTablero(tablero.Id, tableroMod);
+                }
                 catch (Exception e)
                 {
                     _logger.LogError(e.ToString());
@@ -112,9 +123,10 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         [Route("CrearTablero")]
         public IActionResult CrearTablero()
         {
-            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
+            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
+            {
                 return View(new CrearTableroViewModel());
-            }   
+            }
             return (RedirectToRoute(new { Controller = "Home", action = "Index" }));
         }
 
@@ -122,9 +134,10 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
         [Route("CrearTablero")]
         public IActionResult CrearTablero(CrearTableroViewModel t)
         {
-            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null){
+            if (HttpContext.Session.IsAvailable && HttpContext.Session.GetString("Usuario") != null)
+            {
                 var idUsuario = HttpContext.Session.GetInt32("Id");
-                var tablero = new Tablero(0,idUsuario.Value,t.Nombre,t.Descripcion);
+                var tablero = new Tablero(0, idUsuario.Value, t.Nombre, t.Descripcion);
                 try
                 {
                     _repositorioTablero.CrearTablero(tablero);
@@ -174,7 +187,7 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             return RedirectToAction("Index");
         }
 
-        
+
         private string ObtenerRolUsuario()
         {
             // Verifica si existe la sesión y si contiene el rol del usuario.
@@ -189,7 +202,8 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             return string.Empty;
         }
 
-        private List<IndexTableroViewModel> ListarTableroViewModel(){
+        private List<IndexTableroViewModel> ListarTableroViewModel()
+        {
             var ListaTablerosViewModel = new List<IndexTableroViewModel>();
             var listaTablero = _repositorioTablero.ListarTableros();
             foreach (var item in listaTablero)
@@ -210,7 +224,7 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             return ListaTablerosViewModel;
         }
 
-        
+
         private List<IndexTableroViewModel> ListarTableroPorUsuarioViewModel(int idUsuario)
         {
             var listaTablerosViewModel = new List<IndexTableroViewModel>();
@@ -243,11 +257,11 @@ namespace tl2_tp10_2023_lucianobonilla27.Controllers
             return listaTablerosViewModel;
         }
 
-           // Método para obtener el id del usuario de sesión
-          private int ObtenerIdUsuarioSesion()
-            {
-                return HttpContext.Session.IsAvailable ? HttpContext.Session.GetInt32("Id") ?? 0 : 0;
-            }
+        // Método para obtener el id del usuario de sesión
+        private int ObtenerIdUsuarioSesion()
+        {
+            return HttpContext.Session.IsAvailable ? HttpContext.Session.GetInt32("Id") ?? 0 : 0;
+        }
 
     }
 }
